@@ -10,6 +10,10 @@ import RepairScreen from './screens/Cliente/RepairScreen';
 import Menu from './components/Menu';
 import OptionScreen from './screens/OptionScreen';
 import ProfileScreenVendedor from './screens/Vendedor/ProfileScreenVendedor';
+import HomeScreenVendedor from './screens/Vendedor/HomeScreenVendedor';
+import RentalScreenVendedor from './screens/Vendedor/RentalScreenVendedor';
+import RepairScreenVendedor from './screens/Vendedor/RepairScreenVendedor';
+import MenuVendedor from './components/MenuVendedor';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -48,13 +52,28 @@ const App = () => {
           </Stack.Screen>
         </Stack.Navigator>
       ) : enterVendedor ? (
-        <Stack.Navigator>
-          <Stack.Screen
+        <Tab.Navigator tabBar={(props) => <MenuVendedor {...props} />}>
+           <Tab.Screen
+            name="Home"
+            component={HomeScreenVendedor}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
+            name="Rentas"
+            component={RentalScreenVendedor}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
+            name="Reparaciones"
+            component={RepairScreenVendedor}
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
             name="VendedorProfile"
             component={ProfileScreenVendedor}
             options={{ headerShown: false }}
           />
-        </Stack.Navigator>
+        </Tab.Navigator>
       ) : (
         <Tab.Navigator tabBar={(props) => <Menu {...props} />}>
           <Tab.Screen
