@@ -8,15 +8,17 @@ import {
   StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import {DB_HOST} from "@env"
 
 const LoginScreen = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  const serverIP = DB_HOST;
 
   const handleLogin = () => {
     axios
-      .post("http://192.168.1.21:8080/auth/login", { email, password })
+      .post(`http://${serverIP}:8080/auth/login`, { email, password })
       .then((response) => {
         console.log(response.data);
         onLogin(response.data);
@@ -30,7 +32,7 @@ const LoginScreen = ({ onLogin }) => {
       });
   };
   const handleRegister = () => {
-    navigation.navigate("Registro"); // Reemplaza "Registro" con el nombre de la pantalla de registro en tu archivo de navegación
+    navigation.navigate("Registro"); //navegar al registro 
   };
 
   return (

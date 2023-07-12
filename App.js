@@ -17,10 +17,13 @@ import RentalScreen from "./screens/cliente/RentalScreen";
 import RepairScreen from "./screens/cliente/RepairScreen";
 //Pantallas para vendedor
 import ProfileScreenVendedor from "./screens/vendedor/ProfileScreenVendedor";
+//Pantallas para taller
+import OrdenesServicioScreen from "./screens/taller/OrdenesServicioScreen";
+import ExpedientesScreen from "./screens/taller/ExpedientesScreen";
 //Componentes
 import Menu from "./components/Menu";
 import MenuVendedor from "./components/MenuVendedor";
-import MenuTaller from "./components/Menu";
+import MenuTaller from "./components/MenuTaller";
 import MenuAdmin from "./components/MenuAdmin";
 
 const Tab = createBottomTabNavigator();
@@ -92,7 +95,6 @@ const App = () => {
        {/* Pantallas sin uso */}
     </Tab.Navigator>
   );
-
   const VendedorNavigator = () => (
     <UsuarioProvider>
       <Tab.Navigator tabBar={(props) => <MenuVendedor {...props} />}>
@@ -119,23 +121,17 @@ const App = () => {
       </Tab.Navigator>
     </UsuarioProvider>
   );
-
   const TallerNavigator = () => (
     <UsuarioProvider>
       <Tab.Navigator tabBar={(props) => <MenuTaller {...props} />}>
         <Tab.Screen
-          name="Home"
-          component={HomeScreen}
+          name="Ordenes"
+          component={OrdenesServicioScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen
-          name="Rentas"
-          component={RentalScreen}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
-          name="Reparaciones"
-          component={RepairScreen}
+          name="Expedientes"
+          component={ExpedientesScreen}
           options={{ headerShown: false }}
         />
         <Tab.Screen

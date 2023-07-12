@@ -5,7 +5,10 @@ const port = process.env.PORT || "8080";
 const connection = require("./connection");
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
-
+const getOrdenes = require("./routes/getOrdenes");
+const getUser = require("./routes/getUser");
+const getProduct = require("./routes/getProduct");
+const getExpedientes = require("./routes/getExpedientes");
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -14,12 +17,13 @@ app.get("/", function (req, res) {
 
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
+app.use("/workshop", getOrdenes);
+app.use("/workshop", getExpedientes);
+app.use("/users", getUser);
+app.use("/products", getProduct);
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);
 
-  // Evento 'connect' para verificar la conexión exitosa
-  connection.on("connect", () => {
-    console.log("Conexión exitosa a la base de datos");
-  });
+
 });
