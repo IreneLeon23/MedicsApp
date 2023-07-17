@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginLeft: 5,
-    color: "#145498",
+    color: "#37414d",
   },
   value: {
     fontSize: 14,

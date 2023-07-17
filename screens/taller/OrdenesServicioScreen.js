@@ -10,7 +10,7 @@ const OrdenesServicioScreen = () => {
   useEffect(() => {
     // Realizar la petición para obtener los campos de la tabla ordenes_servicio
     axios
-      .get(`http://${serverIP}:8080/workshop/ordenes`)
+      .get(`http://192.168.1.5:8080/workshop/ordenes`)
       .then((response) => {
         setOrdenes(response.data);
       })
@@ -26,7 +26,7 @@ const OrdenesServicioScreen = () => {
         fk_producto={item.fk_producto}
         fk_usuario={item.fk_usuario}
         descripcion={item.descripcion}
-        fecha={item.fecha}
+        fecha_captura={item.fecha_captura}
         costo_reparacion={item.costo_reparacion}
         estado={item.estado}
         observaciones={item.observaciones}
@@ -50,7 +50,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+    alignItems: "left",
+    paddingLeft: 10,
+    paddingRight: 10,
     //justifyContent: "center",
     paddingTop: 40,
   },

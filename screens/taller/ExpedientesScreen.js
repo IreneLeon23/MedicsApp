@@ -9,7 +9,7 @@ const ExpedientesScreen = () => {
   useEffect(() => {
     // Realizar la petición para obtener los expedientes
     axios
-      .get(`http://${serverIP}:8080/workshop/expedientes`)
+      .get(`http://192.168.1.5:8080/workshop/expedientes`)
       .then((response) => {
         setExpedientes(response.data);
       })
@@ -44,7 +44,7 @@ const ExpedientesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Listado de Expedientes de Servicio</Text>
+      <Text style={styles.title}>Listado de Expedientes</Text>
       <FlatList
         data={expedientes}
         keyExtractor={(item) => item.id_expediente.toString()}
@@ -58,7 +58,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    alignItems: "left",
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 40,
   },
   title: {

@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-
+import { Table, Row } from 'react-native-table-component';
 const OrdenItem = ({
   id,
   fk_producto,
   fk_usuario,
   descripcion,
-  fecha,
+  fecha_captura,
   costo_reparacion,
   estado,
   observaciones,
@@ -44,7 +44,7 @@ const OrdenItem = ({
           <Ionicons name="calendar-outline" size={24} color="#145498" />
           <Text style={styles.field}>Fecha:</Text>
         </View>
-        <Text style={styles.value}>{fecha}</Text>
+        <Text style={styles.value}>{fecha_captura}</Text>
 
         <View style={styles.fieldContainer}>
           <Ionicons name="cash-outline" size={24} color="#145498" />
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 5,
-    color: '#145498',
+    color: '#37414d',
   },
   value: {
     fontSize: 14,
