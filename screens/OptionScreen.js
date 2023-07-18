@@ -1,6 +1,5 @@
-// OptionsScreen.js
 
-import React from "react";
+import { React, useEffect } from "react";
 import {
   View,
   ImageBackground,
@@ -11,8 +10,33 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as Font from "expo-font";
 
 const OptionsScreen = ({ navigation }) => {
+  const loadFonts = async () => {
+    await Promise.all([
+      Font.loadAsync({
+        "jakarta-bold": require("../assets/fonts/Bold.ttf"),
+      }),
+      Font.loadAsync({
+        "jakarta-medium": require("../assets/fonts/Medium.ttf"),
+      }),
+      Font.loadAsync({
+        "jakarta-regular": require("../assets/fonts/Regular.ttf"),
+      }),
+      Font.loadAsync({
+        "jakarta-light": require("../assets/fonts/Light.ttf"),
+      }),
+      Font.loadAsync({
+        "jakarta-semi-bold": require("../assets/fonts/SemiBold.ttf"),
+      }),
+    ]);
+  };
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
+
   const handleRegularLogin = () => {
     navigation.navigate("Login");
   };
@@ -59,8 +83,8 @@ const OptionsScreen = ({ navigation }) => {
         <View style={styles.textContainer}>
           <Text style={styles.text}>No tiene una cuenta aún?</Text>
           <TouchableOpacity style={styles.refButton} onPress={handleRegister}>
-          <Text style={styles.alterText}>Registro</Text>
-        </TouchableOpacity>
+            <Text style={styles.refText}> Registro</Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     </View>
@@ -101,34 +125,40 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mainButton: {
+    
     backgroundColor: "#E7E7E7",
     paddingVertical: 15,
     borderRadius: 10,
   },
   mainText: {
+    fontFamily: "jakarta-semi-bold",
     color: "#131517",
     fontSize: 16,
     textAlign: "center",
   },
   alterText: {
+    fontFamily: "jakarta-semi-bold",
     color: "#E7E7E7",
     fontSize: 16,
     textAlign: "center",
   },
   textContainer: {
+    fontFamily: "jakarta-semi-bold",
     flexDirection: "row",
     alignItems: "baseline",
     marginTop: 20,
   },
   text: {
+    fontFamily: "jakarta-regular",
     color: "#E7E7E7",
     fontSize: 14,
     marginTop: 20,
   },
   refText: {
+    fontFamily: "jakarta-semi-bold",
+    textDecorationLine: 'underline',
     color: "#E7E7E7",
     fontSize: 14,
-    fontWeight: "bold",
   },
   refButton: {},
 });

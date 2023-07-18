@@ -1,20 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import {DB_HOST} from "@env"
+import { Ionicons } from "@expo/vector-icons";
+import { DB_HOST } from "@env";
+import * as Font from "expo-font";
 
 const LoginScreen = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
   const navigation = useNavigation();
   const serverIP = DB_HOST;
+
+  // Importar fuentes
+  const loadFonts = async () => {
+    await Promise.all([
+      Font.loadAsync({
+        "jakarta-bold": require("../assets/fonts/Bold.ttf"),
+        "jakarta-medium": require("../assets/fonts/Medium.ttf"),
+        "jakarta-regular": require("../assets/fonts/Regular.ttf"),
+        "jakarta-light": require("../assets/fonts/Light.ttf"),
+        "jakarta-semi-bold": require("../assets/fonts/SemiBold.ttf"),
+      }),
+    ]);
+  };
+
+  useEffect(() => {
+    loadFonts();
+  }, []);
 
   const handleLogin = () => {
     axios
@@ -31,8 +45,13 @@ const LoginScreen = ({ onLogin }) => {
         }
       });
   };
+
   const handleRegister = () => {
-    navigation.navigate("Registro"); //navegar al registro 
+    navigation.navigate("Registro"); // Navegar al registro
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -40,11 +59,13 @@ const LoginScreen = ({ onLogin }) => {
       <Text style={styles.welcomeText}>Bienvenido</Text>
       <Text style={styles.subtitleText}>Inicie sesión para continuar</Text>
       {/* Input fields */}
-
       <View style={styles.inputView}>
-        <Text style={styles.labelText}>Correo electrónico</Text>
+        <View style={styles.labelContainer}>
+          <Ionicons name="mail-outline" size={24} color="#37414d" />
+          <Text style={styles.labelText}>Correo electrónico</Text>
+        </View>
         <TextInput
-          style={styles.inputText}
+          style={styles.emailInputText}
           placeholder=""
           placeholderTextColor="#D3D3D3"
           onChangeText={setEmail}
@@ -52,17 +73,28 @@ const LoginScreen = ({ onLogin }) => {
         />
       </View>
       <View style={styles.inputView}>
-        <Text style={styles.labelText}>Contraseña</Text>
-        <TextInput
-          style={styles.inputText}
-          secureTextEntry
-          placeholder=""
-          placeholderTextColor="#D3D3D3"
-          onChangeText={setPassword}
-          value={password}
-        />
+        <View style={styles.labelContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="#37414d" />
+          <Text style={styles.labelText}>Contraseña</Text>
+        </View>
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.passwordInputText}
+            secureTextEntry={!showPassword}
+            placeholder=""
+            placeholderTextColor="#D3D3D3"
+            onChangeText={setPassword}
+            value={password}
+          />
+          <TouchableOpacity style={styles.showPasswordButton} onPress={toggleShowPassword}>
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={24}
+              color="#37414d"
+            />
+          </TouchableOpacity>
+        </View>
       </View>
-
       {/* End input fields */}
       <TouchableOpacity style={styles.forgotPasswordButton}>
         <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
@@ -85,39 +117,65 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    //justifyContent: "center",
     paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingTop: 10,
   },
-
   welcomeText: {
-    fontWeight: "bold",
+    fontFamily: "jakarta-bold",
     fontSize: 30,
     color: "#081d33",
     marginBottom: 10,
     textAlign: "center",
   },
   subtitleText: {
-    fontSize: 18,
+    fontFamily: "jakarta-regular",
+    fontSize: 15,
     color: "#37414d",
-    marginBottom: 40,
+    marginBottom: 60,
     textAlign: "center",
   },
   inputView: {
     marginBottom: 20,
     alignSelf: "stretch",
   },
-  labelText: {
-    color: "#37414d",
+  labelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
-    fontSize: 16,
   },
-  inputText: {
+  labelText: {
+    fontFamily: "jakarta-light",
+    color: "#37414d",
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  emailInputText: {
+    fontFamily: "jakarta-semi-bold",
     borderBottomColor: "#D3D3D3",
     borderBottomWidth: 1,
     height: 50,
     color: "#37414d",
     fontSize: 16,
+  },
+  passwordInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  passwordInputText: {
+    flex: 0.9,
+    fontFamily: "jakarta-semi-bold",
+    borderBottomColor: "#D3D3D3",
+    borderBottomWidth: 1,
+    height: 50,
+    color: "#37414d",
+    fontSize: 16,
+  },
+  showPasswordButton: {
+    flex: 0.1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   forgotPasswordButton: {
     alignSelf: "flex-start",
@@ -125,8 +183,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   forgotPasswordText: {
+    fontFamily: "jakarta-semi-bold",
     color: "#145498",
-    fontWeight: "bold",
     fontSize: 15,
   },
   loginButton: {
@@ -139,8 +197,8 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   loginButtonText: {
+    fontFamily: "jakarta-bold",
     color: "#fff",
-    fontWeight: "bold",
     textAlign: "center",
     fontSize: 15,
   },
@@ -150,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   signupText: {
+    fontFamily: "jakarta-regular",
     color: "#37414d",
     marginRight: 5,
     fontSize: 15,
@@ -158,8 +217,8 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   signupButtonText: {
+    fontFamily: "jakarta-semi-bold",
     color: "#145498",
-    fontWeight: "bold",
     fontSize: 15,
   },
 });

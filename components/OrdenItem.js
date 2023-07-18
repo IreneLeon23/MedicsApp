@@ -1,97 +1,137 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Card } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
-import { Table, Row } from 'react-native-table-component';
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity  } from "react-native";
+import { Card } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import * as Font from "expo-font";
+
 const OrdenItem = ({
-  id,
-  fk_producto,
-  fk_usuario,
-  descripcion,
+  folio,
+  nombre_producto,
+  nombre_cliente,
   fecha_captura,
-  costo_reparacion,
-  estado,
-  observaciones,
+  descripcion,
 }) => {
+  useEffect(() => {
+    const loadFonts = async () => {
+      await Promise.all([
+        Font.loadAsync({
+          "jakarta-bold": require("../assets/fonts/Bold.ttf"),
+        }),
+        Font.loadAsync({
+          "jakarta-medium": require("../assets/fonts/Medium.ttf"),
+        }),
+        Font.loadAsync({
+          "jakarta-regular": require("../assets/fonts/Regular.ttf"),
+        }),
+        Font.loadAsync({
+          "jakarta-light": require("../assets/fonts/Light.ttf"),
+        }),
+        Font.loadAsync({
+          "jakarta-semi-bold": require("../assets/fonts/SemiBold.ttf"),
+        }),
+      ]);
+    };
+
+    loadFonts();
+  }, []);
+
   return (
+    <View style={styles.fatherContainer}>
     <Card style={styles.card}>
       <Card.Content>
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="document-text-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Id de Orden:</Text>
+        <View style={styles.fieldContainer}>
+          {/* <Ionicons name="person-outline" size={24} color="#145498" /> */}
+          <Text style={styles.fieldPrimary}>{nombre_producto}</Text>
         </View>
-        <Text style={styles.value}>{id}</Text>
-
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="cube-outline" size={24} color="#145498" />
-          <Text style={styles.field}>ID Producto:</Text>
-        </View>
-        <Text style={styles.value}>{fk_producto}</Text>
-
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="person-outline" size={24} color="#145498" />
-          <Text style={styles.field}>ID Usuario:</Text>
-        </View>
-        <Text style={styles.value}>{fk_usuario}</Text>
 
         <View style={styles.fieldContainer}>
-          <Ionicons name="clipboard-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Descripción:</Text>
+          <Text style={styles.fieldSecondary}>{fecha_captura}</Text>
+          <Ionicons name="calendar-outline" size={16} color="#777" />
         </View>
-        <Text style={styles.value}>{descripcion}</Text>
 
         <View style={styles.fieldContainer}>
-          <Ionicons name="calendar-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Fecha:</Text>
+          {/* <Ionicons name="chatbubble-outline" size={24} color="#145498" /> */}
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={styles.fieldTerciary}
+          >
+            {descripcion}
+          </Text>
         </View>
-        <Text style={styles.value}>{fecha_captura}</Text>
 
-        <View style={styles.fieldContainer}>
-          <Ionicons name="cash-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Costo de Reparación:</Text>
+        <View style={styles.fieldContainerAlt}>
+          {/* <Ionicons name="chatbubble-outline" size={24} color="#145498" /> */}
+          <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
+            {nombre_cliente}
+          </Text>
         </View>
-        <Text style={styles.value}>{costo_reparacion}</Text>
-
-        <View style={styles.fieldContainer}>
-          <Ionicons name="alert-circle-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Estado:</Text>
-        </View>
-        <Text style={styles.value}>{estado}</Text>
-
-        <View style={styles.fieldContainer}>
-          <Ionicons name="chatbubble-outline" size={24} color="#145498" />
-          <Text style={styles.field}>Observaciones:</Text>
-        </View>
-        <Text style={styles.value}>{observaciones}</Text>
       </Card.Content>
+      <TouchableOpacity style={styles.optionButton}>
+      <Ionicons name="open-outline" size={22} color="#145498" />
+    </TouchableOpacity>
     </Card>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  fatherContainer: {
+    alignItems: "center",
+  },
   card: {
-    borderRadius: 10,
+    borderRadius: 8,
     marginBottom: 10,
-    elevation: 3,
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    width: '98%',
+    marginVertical: 10,
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   fieldContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
-  fieldContainerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+  fieldContainerAlt: {
+    alignItems: "flex-end",
   },
-  field: {
+  fieldPrimary: {
+    fontFamily: "jakarta-bold",
     fontSize: 16,
-    fontWeight: 'bold',
     marginLeft: 5,
-    color: '#37414d',
+    color: "#333",
   },
-  value: {
-    fontSize: 14,
-    marginBottom: 10,
+  fieldSecondary: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#777",
+  },
+  fieldTerciary: {
+    fontFamily: "jakarta-regular",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#777",
+  },
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    color: "#777",
+    textAlign: "right",
+  },
+  opaqueText: {
+    opacity: 0.7,
+  },
+  optionButton: {
+    position: "absolute",
+    top: 10,
+    right: 5,
+    padding: 1,
   },
 });
 

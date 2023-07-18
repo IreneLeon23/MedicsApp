@@ -14,6 +14,16 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "fonts": {
+      "asset": "./assets/fonts/",
+      "includes": [
+        "Bold.ttf",
+        "Medium.ttf",
+        "Regular.ttf",
+        "Light.ttf",
+        "SemiBold.ttf"
+      ]
+    },
     "ios": {
       "supportsTablet": true
     },

@@ -9,7 +9,7 @@ const connection = mysql.createPool({
   port: 3306,
   user: dbUser,
   password: dbPassword,
-  database: "medics_app",
+  database: "taller_medics",
   multipleStatements: true,
 });
 // Verificar la conexión
