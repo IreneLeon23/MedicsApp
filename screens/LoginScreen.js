@@ -32,7 +32,7 @@ const LoginScreen = ({ onLogin }) => {
 
   const handleLogin = () => {
     axios
-      .post(`http://192.168.1.5:8080/auth/login`, { email, password })
+      .post(`http://192.168.0.18:8080/auth/login`, { email, password })
       .then((response) => {
         console.log(response.data);
         onLogin(response.data);

@@ -6,6 +6,7 @@ const connection = require("./connection");
 const authRoutes = require("./routes/auth");
 const profileRoutes = require("./routes/profile");
 const getOrdenes = require("./routes/getOrdenes");
+const getReportes = require("./routes/getReportes");
 const getUser = require("./routes/getUser");
 const getProduct = require("./routes/getProduct");
 const getExpedientes = require("./routes/getExpedientes");
@@ -19,6 +20,7 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/workshop", getOrdenes);
 app.use("/workshop", getExpedientes);
+app.use("/workshop",getReportes);
 app.use("/users", getUser);
 app.use("/products", getProduct);
 

@@ -7,8 +7,8 @@ const dbPassword = process.env.DB_PASSWORD;
 const connection = mysql.createPool({
   host: serverIP,
   port: 3306,
-  user: dbUser,
-  password: dbPassword,
+  user: "user",
+  password: "password",
   database: "taller_medics",
   multipleStatements: true,
 });

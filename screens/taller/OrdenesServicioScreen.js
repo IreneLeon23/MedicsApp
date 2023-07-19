@@ -49,7 +49,7 @@ const OrdenesServicioScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.5:8080/workshop/ordenes`)
+      .get(`http://192.168.0.18:8080/workshop/ordenes`) 
       .then((response) => {
         setOrdenes(response.data);
       })
@@ -71,7 +71,7 @@ const OrdenesServicioScreen = () => {
         nombre_cliente={item.nombre_cliente}
       />
     );
-  };
+  }; 
 
   const handleFilterChange = (text) => {
     setFiltro(text);

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection");
+const connection = require("../connection"); 
 
 // Ruta para obtener todos los campos de la tabla orden_cotizacion con los joins
 router.get("/ordenes", (req, res) => {

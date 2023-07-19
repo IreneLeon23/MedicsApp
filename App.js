@@ -10,6 +10,7 @@ import OptionScreen from "./screens/OptionScreen";
 import ClientAdminScreen from "./screens/administrador/ClientAdminScreen";
 import OrdenesServicioScreen from "./screens/taller/OrdenesServicioScreen";
 import ExpedientesScreen from "./screens/taller/ExpedientesScreen";
+import ReportesScreen from "./screens/taller/ReportesScreen";
 import MenuTaller from "./components/MenuTaller";
 import MenuAdmin from "./components/MenuAdmin";
 
@@ -56,6 +57,11 @@ const App = () => {
         options={{ headerShown: false }}
       />
       {/* Resto de las pantallas */}
+      <Tab.Screen
+        name="Reportes"
+        component={ReportesScreen}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 
