@@ -35,7 +35,7 @@ const Menu = ({ state, descriptors, navigation }) => {
             style={[styles.tabButton, isFocused && styles.tabButtonFocused]}
           >
             <Ionicons
-              name={label === 'Ordenes' ? 'file-tray-full' : label === 'Rentas' ? 'cart' : label === 'Reparaciones' ? 'clipboard' : label === 'Taller' ? 'stats-bars' : 'person'}
+              name={label === 'Ordenes' ? 'file-tray-full' : label === 'Rentas' ? 'cart' : label === 'Reparaciones' ? 'clipboard' : label === 'Cotizaciones' ? 'cart' : label === 'Taller' ? 'stats-bars' : 'person'}
 
               size={24}
               color={isFocused ? '#145498' : '#8492A6'}

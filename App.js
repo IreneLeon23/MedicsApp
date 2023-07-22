@@ -11,6 +11,7 @@ import ClientAdminScreen from "./screens/administrador/ClientAdminScreen";
 import OrdenesServicioScreen from "./screens/taller/OrdenesServicioScreen";
 import ExpedientesScreen from "./screens/taller/ExpedientesScreen";
 import ReportesScreen from "./screens/taller/ReportesScreen";
+import CotizacionScreen from "./screens/taller/CotizacionScreen";
 import MenuTaller from "./components/MenuTaller";
 import MenuAdmin from "./components/MenuAdmin";
 
@@ -57,6 +58,11 @@ const App = () => {
         options={{ headerShown: false }}
       />
       {/* Resto de las pantallas */}
+      <Tab.Screen
+        name="Cotizaciones"
+        component={CotizacionScreen}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen
         name="Reportes"
         component={ReportesScreen}
