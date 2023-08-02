@@ -5,11 +5,11 @@ import {
   DrawerItem,
 } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import OrdenesServicioScreen from "./screens/taller/OrdenesServicioScreen";
-import ExpedientesScreen from "./screens/taller/ExpedientesScreen";
-import ReportesScreen from "./screens/taller/ReportesScreen";
-import CotizacionScreen from "./screens/taller/CotizacionScreen";
-import AltaServicioScreen from "./screens/taller/AltaServicioScreen";
+import OrdenesServicioScreen from "./../screens/taller/OrdenesServicioScreen";
+import ExpedientesScreen from "./../screens/taller/ExpedientesScreen";
+import ReportesScreen from "./../screens/taller/ReportesScreen";
+import CotizacionScreen from "./../screens/taller/CotizacionScreen";
+import AltaServicioScreen from "./../screens/taller/AltaServicioScreen";
 const CustomDrawerContent = ({ state, descriptors, navigation }) => {
   return (
     <DrawerContentScrollView>

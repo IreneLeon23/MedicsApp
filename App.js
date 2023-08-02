@@ -43,38 +43,6 @@ const App = () => {
     </Tab.Navigator>
   );
 
-  // const TallerNavigator = () => (
-  //   // <Tab.Navigator tabBar={(props) => <MenuTaller {...props} />}>
-  //   //   <Tab.Screen
-  //   //     name="Ordenes"
-  //   //     component={OrdenesServicioScreen}
-  //   //     options={{ headerShown: false }}
-  //   //   />
-  //   //   <Tab.Screen
-  //   //     name="Expedientes"
-  //   //     component={ExpedientesScreen}
-  //   //     options={{ headerShown: false }}
-  //   //   />
-  //   //   {/* Resto de las pantallas */}
-  //   //   <Tab.Screen
-  //   //     name="Alta Servicio"
-  //   //     component={AltaServicioScreen}
-  //   //     options={{ headerShown: false }}
-  //   //   />
-  //   //   <Tab.Screen
-  //   //     name="Cotizaciones"
-  //   //     component={CotizacionScreen}
-  //   //     options={{ headerShown: false }}
-  //   //   />
-  //   //   <Tab.Screen
-  //   //     name="Reportes"
-  //   //     component={ReportesScreen}
-  //   //     options={{ headerShown: false }}
-  //   //   />
-  //   // </Tab.Navigator>
-
-  // );
-
   return (
     <NavigationContainer>
       {!isLoggedIn ? (
