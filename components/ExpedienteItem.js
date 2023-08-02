@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-paper';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from "react-native";
+import { Card } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as Font from "expo-font";
+
 
 const ExpedienteItem = ({
   id_expediente,
-  fecha_entrada,
-  fecha_entrega,
-  fk_servicio,
-  fk_usuario,
+  folio,
   descripcion_equipo,
+  nombre_usuario,
+  nombre_cliente,
+  fecha_entrada,
+  fk_servicio,
+  fecha_entrega,
   direccion,
   foto_equipo,
   tiempo_taller,
@@ -22,194 +27,174 @@ const ExpedienteItem = ({
   observaciones,
   sugerencias,
 }) => {
-  const [showMore, setShowMore] = useState(false);
-
-  const handleShowMore = () => {
-    setShowMore(!showMore);
-  };
+  const [showDetails, setShowDetails] = useState(false);
+  const formattedFechaEntrada = new Date(fecha_entrada).toLocaleDateString("es-ES");
+  const formattedFechaEntrega = new Date(fecha_entrega).toLocaleDateString("es-ES");
 
   return (
-    <Card style={styles.card}>
-      <Card.Content>
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="document-text-outline" size={24} color="#145498" />
-          <Text style={styles.fieldPrimary}>ID Expediente:</Text>
+    <View style={styles.fatherContainer}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldPrimaryID}>{folio}</Text>
+            <MaterialCommunityIcons name="tag" size={20} color="#145498" />
+            <Text style={styles.fieldPrimaryID}>{id_expediente}</Text>
+          </View>
+
+          <View style={styles.fieldContainer}>
+            <Text style={styles.fieldSecondary}>{formattedFechaEntrada}</Text>
+            <MaterialCommunityIcons name="calendar-import" size={16} color="#777" />
+            <Text style={styles.fieldSecondary}>{formattedFechaEntrega}</Text>
+            <MaterialCommunityIcons name="calendar-export" size={16} color="#777" />
+          </View>
+
+          <View style={styles.fieldContainer}>
+            {/* <Ionicons name="chatbubble-outline" size={24} color="#145498" /> */}
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={styles.fieldTerciary}
+            >
+              {descripcion_equipo}
+            </Text>
+          </View>
+
+          <View style={styles.fieldContainerAlt}>
+            {/* <Ionicons name="chatbubble-outline" size={24} color="#145498" /> */}
+            <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
+              {nombre_cliente}
+            </Text>
+          </View>
+        </Card.Content>
+        <View style={styles.optionButton}>
+          <TouchableOpacity
+            style={styles.verMasButton}
+            onPress={() => setShowDetails(true)}
+          >
+            <Ionicons name="open-outline" size={22} color="#145498" />
+          </TouchableOpacity>
+          <Modal
+            visible={showDetails}
+            animationType="slide"
+            onRequestClose={() => setShowDetails(false)}
+          >
+            <View style={styles.modalContainer}>
+              <ScrollView contentContainerStyle={styles.scrollContent}>
+                <Text style={styles.fieldPrimary}>ID Expediente: {id_expediente}</Text>
+                <Text style={styles.fieldTerciaryAlt}>Descripción del equipo: {descripcion_equipo}</Text>
+                {/* ... other fields ... */}
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowDetails(false)}
+                >
+                  <Text style={styles.closeButtonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+          </Modal>
         </View>
-        <Text style={styles.value}>{id_expediente}</Text>
 
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="calendar-outline" size={24} color="#145498" />
-          <Text style={styles.fieldPrimary}>Descripción del equipo:</Text>
-        </View>
-        <Text style={styles.value}>{descripcion_equipo}</Text>
-
-        <View style={styles.fieldContainerRow}>
-          <Ionicons name="calendar-outline" size={24} color="#145498" />
-          <Text style={styles.fieldPrimary}>Fecha de Entrega:</Text>
-        </View>
-        <Text style={styles.value}>{fecha_entrega}</Text>
-
-        {/* Mostrar solo estos campos inicialmente */}
-        {!showMore && (
-          <>
-            <View style={styles.fieldContainer}>
-              <Ionicons name="cube-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>ID Servicio:</Text>
-            </View>
-            <Text style={styles.value}>{fk_servicio}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="person-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>ID Usuario:</Text>
-            </View>
-            <Text style={styles.value}>{fk_usuario}</Text>
-
-            <View style={styles.fieldContainer}>
-              <TouchableOpacity onPress={handleShowMore} style={styles.button}>
-                <Text style={styles.buttonText}>Ver más</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-
-        {/* Mostrar los datos adicionales al hacer clic en "Ver más" */}
-        {showMore && (
-          <>
-            <View style={styles.fieldContainerRow}>
-              <Ionicons name="calendar-outline" size={24} color="#145498" />
-              <Text style={styles.fieldPrimary}>Fecha de Entrada:</Text>
-            </View>
-            <Text style={styles.value}>{fecha_entrada}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="location-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Dirección:</Text>
-            </View>
-            <Text style={styles.value}>{direccion}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="image-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Foto del Equipo:</Text>
-            </View>
-            <Text style={styles.value}>{foto_equipo}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="time-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Tiempo en el taller:</Text>
-            </View>
-            <Text style={styles.value}>{tiempo_taller}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="cash-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Costo de reparación:</Text>
-            </View>
-            <Text style={styles.value}>{costo_reparacion}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="time-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Tiempo para próximo servicio:</Text>
-            </View>
-            <Text style={styles.value}>{tiempo_proximo_servicio}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="alert-circle-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Estado del equipo:</Text>
-            </View>
-            <Text style={styles.value}>{estado_equipo}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="chatbubble-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Notas del cliente:</Text>
-            </View>
-            <Text style={styles.value}>{notas_cliente}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="document-text-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Comentarios internos:</Text>
-            </View>
-            <Text style={styles.value}>{comentarios_internos}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="hammer-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Razón de reparación:</Text>
-            </View>
-            <Text style={styles.value}>{razon_reparacion}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="chatbox-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Observaciones:</Text>
-            </View>
-            <Text style={styles.value}>{observaciones}</Text>
-
-            <View style={styles.fieldContainer}>
-              <Ionicons name="bulb-outline" size={24} color="#145498" />
-              <Text style={styles.fieldSecondary}>Sugerencias:</Text>
-            </View>
-            <Text style={styles.value}>{sugerencias}</Text>
-
-            {/* Agregar más campos aquí si es necesario */}
-
-            <View style={styles.fieldContainer}>
-              <TouchableOpacity onPress={handleShowMore} style={styles.button}>
-                <Text style={styles.buttonText}>Ver menos</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-      </Card.Content>
-    </Card>
+        {/* Modal */}
+      </Card>
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
+  fatherContainer: {
+    alignItems: "center",
+  },
   card: {
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingVertical: 8,
     paddingHorizontal: 4,
-    width: '98%',
+    width: "98%",
     marginVertical: 10,
-    shadowColor: '#171717',
+    shadowColor: "#171717",
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
   fieldContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
-  fieldContainerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+  fieldContainerAlt: {
+    alignItems: "flex-end",
   },
   fieldPrimary: {
-    fontFamily: 'jakarta-bold',
+    fontFamily: "jakarta-bold",
     fontSize: 16,
     marginLeft: 5,
-    color: '#333',
+    color: "#333",
+  },
+  fieldPrimaryID: {
+    fontFamily: "jakarta-bold",
+    fontSize: 16,
+    marginLeft: 1,
+    color: "#145498",
   },
   fieldSecondary: {
-    fontFamily: 'jakarta-semi-bold',
+    fontFamily: "jakarta-semi-bold",
     fontSize: 16,
     marginLeft: 5,
-    color: '#777',
+    color: "#777",
   },
-  value: {
+  fieldTerciary: {
+    fontFamily: "jakarta-regular",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#777",
+  },
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    color: "#777",
+    textAlign: "right",
+  },
+  opaqueText: {
+    opacity: 0.7,
+  },
+  optionButton: {
+    position: "absolute",
+    top: 10,
+    right: 5,
+    padding: 1,
+  },
+  //MODAL
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  fieldPrimary: {
+    fontFamily: "jakarta-bold",
     fontSize: 16,
     marginBottom: 10,
+    color: "#333",
   },
-  button: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: '#145498',
-    borderRadius: 6,
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#777",
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: 'bold',
+  closeButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#145498",
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    color: "#fff",
   },
 });
 

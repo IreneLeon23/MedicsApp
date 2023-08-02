@@ -11,10 +11,12 @@ const getCotizacion = require("./routes/getCotizacion");
 const getUser = require("./routes/getUser");
 const getProduct = require("./routes/getProduct");
 const getExpedientes = require("./routes/getExpedientes");
+const getClient = require("./routes/getClient")
+const postOrdenes = require("./routes/postOrden")
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
-  res.send("Hola c;");
+  res.send("Servidor arriba");
 });
 
 app.use("/auth", authRoutes);
@@ -25,6 +27,8 @@ app.use("/workshop",getCotizacion);
 app.use("/workshop",getReportes);
 app.use("/users", getUser);
 app.use("/products", getProduct);
+app.use("/orders", postOrdenes)
+app.use("/clientes", getClient)
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);

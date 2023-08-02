@@ -1,29 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-import ExpedienteItem from '../../components/ExpedienteItem';
-import { DB_HOST } from '@env';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import axios from "axios";
+import ExpedienteItem from "../../components/ExpedienteItem";
+import { DB_HOST } from "@env";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
-
 const ExpedientesScreen = () => {
   const [expedientes, setExpedientes] = useState([]);
-  const [filtro, setFiltro] = useState('');
+  const [filtro, setFiltro] = useState("");
   const [orderBy, setOrderBy] = useState(null);
-  // const serverIP = DB_HOST;
 
   useEffect(() => {
-    // Realizar la petición para obtener los expedientes
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
     axios
-      .get(`http://192.168.0.18:8080/workshop/expedientes`)
+      .get(`http://192.168.1.17:8080/workshop/expedientes`)
       .then((response) => {
         setExpedientes(response.data);
       })
       .catch((error) => {
-        console.error('Error al obtener los expedientes:', error);
+        console.error("Error al obtener los expedientes:", error);
       });
-  }, []);
+  };
 
   const renderExpedienteItem = ({ item }) => {
     return <ExpedienteItem {...item} />;
@@ -36,28 +44,28 @@ const ExpedientesScreen = () => {
 
   const handleFilterPress = () => {
     let nextOrderBy = null;
-    let toastText = '';
+    let toastText = "";
 
     switch (orderBy) {
       case null:
-        nextOrderBy = 'id_expediente';
-        toastText = 'Ordenando por ID Expediente...';
+        nextOrderBy = "id_expediente";
+        toastText = "Ordenando por ID Expediente...";
         break;
-      case 'id_expediente':
-        nextOrderBy = 'fecha_entrada';
-        toastText = 'Ordenando por fecha de entrada...';
+      case "id_expediente":
+        nextOrderBy = "fecha_entrada";
+        toastText = "Ordenando por fecha de entrada...";
         break;
-      case 'fecha_entrada':
-        nextOrderBy = 'fk_servicio';
-        toastText = 'Ordenando por ID Servicio...';
+      case "fecha_entrada":
+        nextOrderBy = "fk_servicio";
+        toastText = "Ordenando por ID Servicio...";
         break;
-      case 'fk_servicio':
-        nextOrderBy = 'fk_usuario';
-        toastText = 'Ordenando por ID Usuario...';
+      case "fk_servicio":
+        nextOrderBy = "fk_usuario";
+        toastText = "Ordenando por ID Usuario...";
         break;
-      case 'fk_usuario':
+      case "fk_usuario":
         nextOrderBy = null;
-        toastText = 'Ordenamiento desactivado';
+        toastText = "Ordenamiento desactivado";
         break;
       default:
         break;
@@ -69,13 +77,13 @@ const ExpedientesScreen = () => {
     if (nextOrderBy) {
       const sortedData = [...expedientes].sort((a, b) => {
         switch (nextOrderBy) {
-          case 'id_expediente':
+          case "id_expediente":
             return a.id_expediente - b.id_expediente;
-          case 'fecha_entrada':
+          case "fecha_entrada":
             return new Date(a.fecha_entrada) - new Date(b.fecha_entrada);
-          case 'fk_servicio':
+          case "fk_servicio":
             return a.fk_servicio - b.fk_servicio;
-          case 'fk_usuario':
+          case "fk_usuario":
             return a.fk_usuario - b.fk_usuario;
           default:
             return 0;
@@ -86,10 +94,10 @@ const ExpedientesScreen = () => {
     }
 
     Toast.show({
-      type: 'info',
-      text1: 'Filtrar',
+      type: "info",
+      text1: "Filtrar",
       text2: toastText,
-      position: 'bottom',
+      position: "bottom",
       bottomOffset: 60,
       visibilityTime: 1500,
       autoHide: true,
@@ -97,7 +105,7 @@ const ExpedientesScreen = () => {
   };
 
   const filterExpedientes = (text) => {
-    if (text === '') {
+    if (text === "") {
       fetchData();
     } else {
       const filteredItems = expedientes.filter((item) => {
@@ -122,11 +130,14 @@ const ExpedientesScreen = () => {
         </View>
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar por ID, ID Servicio o ID Usuario..."
+          placeholder="Buscar..."
           onChangeText={handleFilterChange}
           value={filtro}
         />
-        <TouchableOpacity style={styles.filterButton} onPress={handleFilterPress}>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={handleFilterPress}
+        >
           <Ionicons name="filter" size={24} color="#eef" />
         </TouchableOpacity>
       </View>
@@ -143,33 +154,33 @@ const ExpedientesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 40,
   },
   searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   searchIcon: {
     marginRight: 5,
   },
   searchInput: {
-    fontFamily: 'jakarta-semi-bold',
+    fontFamily: "jakarta-semi-bold",
     fontSize: 16,
     flex: 1,
     height: 40,
-    backgroundColor: '#fffd',
+    backgroundColor: "#fffd",
     borderRadius: 4,
     paddingHorizontal: 15,
-    position: 'relative',
+    position: "relative",
     elevation: 10,
     marginRight: 5,
   },
   filterButton: {
-    backgroundColor: '#145498',
+    backgroundColor: "#145498",
     borderRadius: 30,
     padding: 10,
   },

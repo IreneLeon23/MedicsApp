@@ -32,7 +32,7 @@ const LoginScreen = ({ onLogin }) => {
 
   const handleLogin = () => {
     axios
-      .post(`http://192.168.0.18:8080/auth/login`, { email, password })
+      .post(`http://192.168.1.17:8080/auth/login`, { email, password })
       .then((response) => {
         console.log(response.data);
         onLogin(response.data);
@@ -61,8 +61,8 @@ const LoginScreen = ({ onLogin }) => {
       {/* Input fields */}
       <View style={styles.inputView}>
         <View style={styles.labelContainer}>
-          <Ionicons name="mail-outline" size={24} color="#37414d" />
-          <Text style={styles.labelText}>Correo electrónico</Text>
+          <Ionicons name="person-outline" size={24} color="#37414d" />
+          <Text style={styles.labelText}>Usuario</Text>
         </View>
         <TextInput
           style={styles.emailInputText}

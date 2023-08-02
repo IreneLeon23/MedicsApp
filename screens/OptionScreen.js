@@ -1,4 +1,3 @@
-
 import { React, useEffect } from "react";
 import {
   View,
@@ -62,7 +61,7 @@ const OptionsScreen = ({ navigation }) => {
           resizeMode="contain"
         />
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.alterButton}
             onPress={handleGoogleLogin}
           >
@@ -71,7 +70,7 @@ const OptionsScreen = ({ navigation }) => {
               <Ionicons name="logo-google" size={24} color="#fff" /> Entrar con
               Google
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             style={styles.mainButton}
@@ -80,12 +79,12 @@ const OptionsScreen = ({ navigation }) => {
             <Text style={styles.mainText}>Iniciar sesión</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.textContainer}>
+        {/* <View style={styles.textContainer}>
           <Text style={styles.text}>No tiene una cuenta aún?</Text>
           <TouchableOpacity style={styles.refButton} onPress={handleRegister}>
             <Text style={styles.refText}> Registro</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </ImageBackground>
     </View>
   );
@@ -125,7 +124,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mainButton: {
-    
     backgroundColor: "#E7E7E7",
     paddingVertical: 15,
     borderRadius: 10,
@@ -156,7 +154,7 @@ const styles = StyleSheet.create({
   },
   refText: {
     fontFamily: "jakarta-semi-bold",
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     color: "#E7E7E7",
     fontSize: 14,
   },

@@ -49,7 +49,7 @@ const OrdenesServicioScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.0.18:8080/workshop/ordenes`) 
+      .get(`http://192.168.1.17:8080/workshop/ordenes`) 
       .then((response) => {
         setOrdenes(response.data);
       })
@@ -59,17 +59,23 @@ const OrdenesServicioScreen = () => {
   };
 
   const renderOrdenItem = ({ item }) => {
-    const fechaFormateada = new Date(item.fecha_captura).toLocaleDateString(
-      "es-ES"
-    );
+    const fechaCapturaFormateada = new Date(
+      item.fecha_captura
+    ).toLocaleDateString("es-ES");
+    const fechaCompromisoFormateada = new Date(
+      item.fecha_compromiso
+    ).toLocaleDateString("es-ES");
     return (
       <OrdenItem
-        id={item.folio}
-        nombre_producto={item.nombre_producto}
-        fecha_captura={fechaFormateada}
-        descripcion={item.descripcion}
-        nombre_cliente={item.nombre_cliente}
-      />
+      folio={item.folio}
+      nombre_producto={item.nombre_producto}
+      fecha_captura={fechaCapturaFormateada}
+      fecha_compromiso={fechaCompromisoFormateada}
+      descripcion_producto={item.descripcion_producto}
+      nombre_cliente={item.nombre_cliente}
+      telefono_cliente={item.telefono_cliente}
+      whats_cliente={item.whats_cliente}
+    />
     );
   }; 
 

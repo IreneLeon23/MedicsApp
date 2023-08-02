@@ -11,7 +11,8 @@ module.exports = function(api) {
         "allowlist": null,
         "safe": false,
         "allowUndefined": true
-      }]
+      }],
+      "react-native-reanimated/plugin" // Agrega esta línea para el plugin de react-native-reanimated
     ],
   };
 };
