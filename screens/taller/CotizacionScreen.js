@@ -1,13 +1,17 @@
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Modal, StyleSheet, TextInput, Dimensions } from 'react-native'; // Importamos Dimensions desde react-native
-import { DataTable, FAB } from 'react-native-paper';
-import axios from "axios"; 
+import { View, Text, FlatList, TouchableOpacity, Modal, StyleSheet, TextInput, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { FAB, Card } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const CotizacionScreen = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
   const [selectedCotizacion, setSelectedCotizacion] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const windowWidth = Dimensions.get('window').width;
+  const [showModal, setShowModal] = useState(false);
   const [editedData, setEditedData] = useState({
     nombre_cliente: "",
     estatus_orden: "",
@@ -19,14 +23,15 @@ const CotizacionScreen = () => {
     nombre_usuario: "",
   });
 
-  // Llamada a la API para obtener los datos de las cotizaciones
+  const [searchQuery, setSearchQuery] = useState('');
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.17:8080/workshop/cotizacion`) 
+      .get(`http://192.168.1.15:8080/workshop/cotizacion`) 
       .then((response) => {
         setCotizaciones(response.data);
       })
@@ -35,7 +40,13 @@ const CotizacionScreen = () => {
       });
   };
 
-  // Función para manejar la edición de los datos
+  // Function to filter cotizaciones based on the search query
+  const filteredCotizaciones = cotizaciones.filter(
+    (cotizacion) =>
+      cotizacion.nombre_cliente.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cotizacion.equipo.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const onEditPress = () => {
     setIsEditing(true);
     setEditedData({
@@ -68,72 +79,120 @@ const CotizacionScreen = () => {
   const onCancelPress = () => {
     setIsEditing(false);
     setEditedData({
-        nombre_cliente: "",
-        estatus_orden: "",
-        fecha_captura: "",
-        fecha_compromiso: "",
-        comentario_cotizacion: "",
-        equipo: "",
-        total: "", 
-        nombre_usuario: "",
+      nombre_cliente: "",
+      estatus_orden: "",
+      fecha_captura: "",
+      fecha_compromiso: "",
+      comentario_cotizacion: "",
+      equipo: "",
+      total: "", 
+      nombre_usuario: "",
     });
   };
-
-  // Renderizar los elementos de la lista
-  const renderTableItem = ({ item }) => (
-    <DataTable.Row>
-      <DataTable.Cell>{item.folio}</DataTable.Cell>
-      <DataTable.Cell>{item.nombre_cliente}</DataTable.Cell>
-      <DataTable.Cell>{item.estatus_orden}</DataTable.Cell>
-      <DataTable.Cell>
-        <TouchableOpacity onPress={() => setSelectedCotizacion(item)}>
-          <Text style={{ color: 'blue' }}>Ver más</Text>
-        </TouchableOpacity>
-      </DataTable.Cell>
-    </DataTable.Row>
-  );
+  const onViewMorePress = (cotizacion) => {
+    setSelectedCotizacion(cotizacion);
+    setShowModal(true);
+  };
   
+  const renderCotizacionCard = ({ item }) => {
+    const { folio, equipo, fecha_captura, comentario_cotizacion, nombre_cliente} = item; // Destructure the item data
+  
+    return (
+      <View style={styles.fatherContainer}>
+        <Card style={styles.card}>
+          <Card.Content>
+            {/* Mostrar el folio */}
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldPrimary}>{folio}</Text>
+            </View>
+  
+            {/* Mostrar el equipo */}
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldPrimary}>{equipo}</Text>
+            </View>
+  
+            {/* Mostrar la fecha */}
+            <View style={styles.fieldContainer}>
+              <Text style={styles.fieldSecondary}>{fecha_captura}</Text>
+              <Ionicons name="calendar-outline" size={16} color="#777" />
+            </View>
+  
+            <View style={styles.fieldContainer}>
+              <Text numberOfLines={2} ellipsizeMode="tail" style={styles.fieldTerciary}>
+                {comentario_cotizacion}
+              </Text>
+            </View>
+  
+            <View style={styles.fieldContainerAlt}>
+              <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
+                {nombre_cliente}
+              </Text>
+            </View>
+          </Card.Content>
+          <TouchableOpacity
+            style={styles.optionButton}
+            onPress={() => onViewMorePress(item)}
+          >
+            <Ionicons name="open-outline" size={22} color="#145498" />
+          </TouchableOpacity>
+        </Card>
+      </View>
+    );
+  };
+  const navigation = useNavigation();
+
+  const onNewCotizacionPress = () => {
+    navigation.navigate('NuevaCotizacion');
+  };
+
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
-        Cotizaciones
-      </Text>
-
-  
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Folio</DataTable.Title>
-          <DataTable.Title>Cliente</DataTable.Title>
-          <DataTable.Title>Estatus</DataTable.Title>
-          <DataTable.Title>Ver más</DataTable.Title>
-        </DataTable.Header>
-  
-        <FlatList
-          data={cotizaciones}
-          keyExtractor={(item) => item.folio}
-          renderItem={renderTableItem} // Usamos renderTableItem para mostrar solo los primeros tres campos en la tabla
+    <View style={styles.container}>
+      {/* Barra de búsqueda */}
+      <View style={styles.searchBar}>
+        <Ionicons name="search-outline" size={24} color="#777" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="Buscar por cliente o equipo..."
         />
-      </DataTable>
+        <TouchableOpacity style={styles.filterButton}>
+          <Text style={{ color: "white" }}>Filtrar</Text>
+        </TouchableOpacity>
+      </View>
 
-       <FAB
+      <FlatList
+        data={filteredCotizaciones}
+        keyExtractor={(item) => item.folio}
+        renderItem={renderCotizacionCard}
+      />
+
+      <FAB
         style={{ position: 'absolute', margin: 16, right: 0, bottom: 0 }}
         icon="plus"
         label="Nueva cotización"
-        onPress={() => {
-          // Implementa la navegación para abrir el formulario de nueva cotización
-          // Puedes utilizar React Navigation para esto
-          
-        }}
+        onPress={onNewCotizacionPress}
       />
 
-<Modal
-        visible={selectedCotizacion !== null}
-        onRequestClose={() => setSelectedCotizacion(null)}
+<FAB
+        style={{ position: 'absolute', margin: 16, right: 0, bottom: 0 }}
+        icon="plus"
+        label="Nueva cotización"
+        onPress={onNewCotizacionPress}
+      />
+
+      {/* Modal */}
+      {/* Modal */}
+      <Modal
+        visible={showModal}
+        onRequestClose={() => setShowModal(false)}
         transparent
       >
-        <View style={styles.modalContainer}>
+        <KeyboardAvoidingView behavior="padding" style={styles.modalContainer}>
           {selectedCotizacion && (
             <View style={[styles.modalContent, { width: windowWidth - 32 }]}>
+         
+
               {isEditing ? (
                 <>
                  <TextInput
@@ -252,70 +311,60 @@ const CotizacionScreen = () => {
                 </TouchableOpacity>
               )}
 
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setSelectedCotizacion(null)}
-              >
-                <Text style={styles.closeButtonText}>Cerrar</Text>
-              </TouchableOpacity>
-            </View>
+             <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setSelectedCotizacion(null)}
+                >
+                  <Text style={styles.closeButtonText}>Cerrar</Text>
+                </TouchableOpacity>
+                </View>
           )}
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  // ... Estilos anteriores ...
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 40,
+  },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: '#fff',
+    padding: 20,
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 8,
-    elevation: 5,
-    alignItems: 'center', // Center the content horizontally
+  scrollContent: {
+    flexGrow: 1,
   },
-  label: {
-    fontWeight: 'bold',
-    alignSelf: 'flex-start', // Alinear a la izquierda
-    marginBottom: 4, // Espacio entre etiquetas
+  fieldPrimary: {
+    fontFamily: "jakarta-bold",
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#333",
   },
-  text: {
-    alignSelf: 'flex-start', // Alinear a la izquierda
-    marginBottom: 8, // Espacio entre campos
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#777",
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 8,
-    paddingHorizontal: 8,
-    width: '100%',
+  closeButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#145498",
+    borderRadius: 5,
   },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 16,
-  },
-  button: {
-    borderRadius: 8,
-    padding: 8,
-    width: '45%',
-  },
-  closeButtonText:{
-    color: 'white',
-    fontWeight: 'bold',
-    backgroundColor: '#145498',
-    padding: 8,
-    borderRadius: 8,
-    marginTop: 16,
+  closeButtonText: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    color: "#fff",
   },
   cancelButton: {
     backgroundColor: 'red',
@@ -338,6 +387,94 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-});
+  fatherContainer: {
+    alignItems: "center",
+  },
+  card: {
+    borderRadius: 8,
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    width: '98%',
+    marginVertical: 10,
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  fieldContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  fieldContainerAlt: {
+    alignItems: "flex-end",
+  },
+  fieldPrimary: {
+    fontFamily: "jakarta-bold",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#333",
+  },
+  fieldSecondary: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#777",
+  },
+  fieldTerciary: {
+    fontFamily: "jakarta-regular",
+    fontSize: 16,
+    marginLeft: 5,
+    color: "#777",
+  },
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    color: "#777",
+    textAlign: "right",
+  },
+  opaqueText: {
+    opacity: 0.7,
+  },
+  optionButton: {
+    position: "absolute",
+    top: 10,
+    right: 5,
+    padding: 1,
+  },searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 8,
+    paddingHorizontal: 8,
+    width: '100%',
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  searchIcon: {
+    marginRight: 5,
+  },
+  searchInput: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    flex: 1,
+    height: 40,
+    backgroundColor: "#fffd",
+    borderRadius: 4,
+    paddingHorizontal: 15,
+    position: "relative",
+    elevation: 10,
+    marginRight: 5,
+  },
+  filterButton: {
+    backgroundColor: "#145498",
+    borderRadius: 30,
+    padding: 10,
+  },
+},);
 
 export default CotizacionScreen;

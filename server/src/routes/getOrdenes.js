@@ -64,7 +64,7 @@ router.post("/ordenes/changeState", (req, res) => {
   const sql = `
     UPDATE orden_cotizacion
     SET estado = ?,
-        paso_actual = ?
+        paso = ?
     WHERE id = ?
   `;
 

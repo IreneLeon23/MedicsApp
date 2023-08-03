@@ -7,25 +7,12 @@ import {
   Text,
   Image,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import * as Font from "expo-font";
 
 const OptionsScreen = ({ navigation }) => {
   const loadFonts = async () => {
     await Promise.all([
-      Font.loadAsync({
-        "jakarta-bold": require("../assets/fonts/Bold.ttf"),
-      }),
-      Font.loadAsync({
-        "jakarta-medium": require("../assets/fonts/Medium.ttf"),
-      }),
-      Font.loadAsync({
-        "jakarta-regular": require("../assets/fonts/Regular.ttf"),
-      }),
-      Font.loadAsync({
-        "jakarta-light": require("../assets/fonts/Light.ttf"),
-      }),
       Font.loadAsync({
         "jakarta-semi-bold": require("../assets/fonts/SemiBold.ttf"),
       }),
@@ -38,10 +25,6 @@ const OptionsScreen = ({ navigation }) => {
 
   const handleRegularLogin = () => {
     navigation.navigate("Login");
-  };
-
-  const handleGoogleLogin = () => {
-    // Handle Google login logic
   };
   const handleRegister = () => {
     navigation.navigate("Registro"); // Reemplaza "Registro" con el nombre de la pantalla de registro en tu archivo de navegación
@@ -61,17 +44,6 @@ const OptionsScreen = ({ navigation }) => {
           resizeMode="contain"
         />
         <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity
-            style={styles.alterButton}
-            onPress={handleGoogleLogin}
-          >
-            <Text style={styles.alterText}>
-              {" "}
-              <Ionicons name="logo-google" size={24} color="#fff" /> Entrar con
-              Google
-            </Text>
-          </TouchableOpacity> */}
-
           <TouchableOpacity
             style={styles.mainButton}
             onPress={handleRegularLogin}
@@ -79,12 +51,6 @@ const OptionsScreen = ({ navigation }) => {
             <Text style={styles.mainText}>Iniciar sesión</Text>
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.textContainer}>
-          <Text style={styles.text}>No tiene una cuenta aún?</Text>
-          <TouchableOpacity style={styles.refButton} onPress={handleRegister}>
-            <Text style={styles.refText}> Registro</Text>
-          </TouchableOpacity>
-        </View> */}
       </ImageBackground>
     </View>
   );
@@ -144,12 +110,6 @@ const styles = StyleSheet.create({
     fontFamily: "jakarta-semi-bold",
     flexDirection: "row",
     alignItems: "baseline",
-    marginTop: 20,
-  },
-  text: {
-    fontFamily: "jakarta-regular",
-    color: "#E7E7E7",
-    fontSize: 14,
     marginTop: 20,
   },
   refText: {

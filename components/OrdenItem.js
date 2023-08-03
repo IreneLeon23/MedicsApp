@@ -1,14 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Linking,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { TextInput } from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 import * as Font from "expo-font";
 
 const OrdenItem = ({
@@ -20,7 +24,126 @@ const OrdenItem = ({
   descripcion_producto,
   telefono_cliente,
   whats_cliente,
+  paso,
+  estado,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const OrdenItemModal = () => {
+    const [editMode, setEditMode] = useState(false);
+
+    // Add state variables to store updated values
+    const [updatedFolio, setUpdatedFolio] = useState(folio); // Inicializar con el valor actual
+    const [updatedNombreProducto, setUpdatedNombreProducto] = useState(nombre_producto); // Inicializar con el valor actual
+    const [updatedNombreCliente, setUpdatedNombreCliente] = useState(nombre_cliente); // Inicializar con el valor actual
+    // Add other state variables for other fields if needed
+
+    const toggleModal = () => {
+      setIsModalVisible(!isModalVisible);
+    };
+
+    const toggleEditMode = () => {
+      setEditMode(!editMode);
+    };
+
+    // Implement a function to handle saving changes
+    const handleSaveChanges = () => {
+      // ... Lógica para guardar los cambios ...
+
+      // After saving changes, exit edit mode
+      toggleEditMode();
+    };
+
+
+    return (
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            {/* Show TextInput for each field */}
+            <View style={styles.inputsContainer}>
+            <TextInput
+              style={[styles.input, styles.leftInput]}
+              value={editMode ? updatedFolio.toString() : folio.toString()}
+              label={"Folio"}
+              onChangeText={setUpdatedFolio}
+              mode="outlined"
+              activeOutlineColor="#145498"
+              disabled={!editMode}
+            />
+
+            <TextInput
+              style={[styles.input, styles.leftInput]}
+              value={editMode ? updatedNombreProducto : nombre_producto}
+              label={"Nombre del Producto"}
+              onChangeText={setUpdatedNombreProducto}
+              mode="outlined"
+              activeOutlineColor="#145498"
+              disabled={!editMode}
+            />
+
+            <TextInput
+              style={[styles.input, styles.leftInput]}
+              value={editMode ? updatedNombreCliente : nombre_cliente}
+              label={"Nombre del Cliente"}
+              onChangeText={setUpdatedNombreCliente}
+              mode="outlined"
+              activeOutlineColor="#145498"
+              disabled={!editMode}
+            />
+            </View>
+            {/* Add other TextInput components for other fields */}
+
+            {/* Botón de "Editar" o "Guardar cambios" */}
+            <TouchableOpacity
+              style={editMode ? styles.saveButton : styles.editButton}
+              onPress={editMode ? handleSaveChanges : toggleEditMode}
+            >
+              <Text style={styles.ButtonText}>
+                {editMode ? "Guardar Cambios" : "Editar"}
+              </Text>
+            </TouchableOpacity>
+
+            {/* Botón de "Cerrar" */}
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.ButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
+    );
+  };
+
+  const [iconName, setIconName] = useState("");
+
+  useEffect(() => {
+    // Set the appropriate icon name based on the estado
+    switch (estado) {
+      case "Recibida":
+        setIconName("location-enter");
+        break;
+      case "Trabajo":
+        setIconName("wrench");
+        break;
+      case "Finalizada":
+        setIconName("check-circle");
+        break;
+      case "Entregada":
+        setIconName("truck-delivery");
+        break;
+      default:
+        setIconName("alert-circle"); // You can use any default icon here
+        break;
+    }
+  }, [estado]);
+
   useEffect(() => {
     const loadFonts = async () => {
       await Promise.all([
@@ -41,9 +164,9 @@ const OrdenItem = ({
         }),
       ]);
     };
-
     loadFonts();
   }, []);
+
   const handlePhoneCall = () => {
     const phoneUrl = `tel:${telefono_cliente}`;
     Linking.canOpenURL(phoneUrl)
@@ -58,6 +181,7 @@ const OrdenItem = ({
         console.error("Error al abrir la marcación al teléfono:", error);
       });
   };
+
   const handleWhatsAppMessage = () => {
     const whatsAppUrl = `whatsapp://send?phone=${whats_cliente}`;
     Linking.canOpenURL(whatsAppUrl)
@@ -77,6 +201,46 @@ const OrdenItem = ({
     <View style={styles.fatherContainer}>
       <Card style={styles.card}>
         <Card.Content>
+          <View style={styles.fieldContainerAltStart}>
+            {/* Conditionally applying style based on estado */}
+            <View style={styles.estadoContainer}>
+              <MaterialCommunityIcons
+                name={iconName}
+                size={16}
+                color={
+                  estado === "Recibida"
+                    ? styles.ordenEstado.color
+                    : estado === "Trabajo"
+                    ? styles.trabajoEstado.color
+                    : estado === "Finalizada"
+                    ? styles.finalizadaEstado.color
+                    : estado === "Entregada"
+                    ? styles.entregadaEstado.color
+                    : styles.defaultEstado.color
+                }
+                style={styles.estadoIcon}
+              />
+              <Text
+                style={[
+                  styles.fieldTerciary,
+                  styles.opaqueText,
+                  styles.estadoText,
+                  estado === "Recibida"
+                    ? styles.ordenEstado
+                    : estado === "Trabajo"
+                    ? styles.trabajoEstado
+                    : estado === "Finalizada"
+                    ? styles.finalizadaEstado
+                    : estado === "Entregada"
+                    ? styles.entregadaEstado
+                    : styles.defaultEstado,
+                ]}
+              >
+                {estado}
+              </Text>
+            </View>
+          </View>
+
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldPrimary}>{nombre_producto} </Text>
             <MaterialCommunityIcons name="tag" size={20} color="#145498" />
@@ -110,18 +274,30 @@ const OrdenItem = ({
           {/* Telefono */}
           <View style={styles.fieldContainer}>
             <TouchableOpacity
-             style={styles.fieldContainer}
+              style={styles.fieldContainer}
               onPress={handlePhoneCall}
             >
-              <MaterialCommunityIcons name="phone" size={16} color="#145498" />
-              <Text style={styles.fieldTel}>{telefono_cliente} </Text>
+              <Ionicons name="call" size={20} color="#145498" />
+              <Text
+                style={styles.fieldTel}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                Llamar
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-             style={styles.fieldContainer}
+              style={styles.fieldContainer}
               onPress={handleWhatsAppMessage}
             >
-              <MaterialCommunityIcons name="whatsapp" size={16} color="#145498" />
-              <Text style={styles.fieldTel}>{whats_cliente}</Text>
+              <Ionicons name="logo-whatsapp" size={20} color="#145498" />
+              <Text
+                style={styles.fieldTel}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                Mensaje
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -131,10 +307,11 @@ const OrdenItem = ({
             </Text>
           </View>
         </Card.Content>
-        <TouchableOpacity style={styles.optionButton}>
+        <TouchableOpacity style={styles.optionButton} onPress={toggleModal}>
           <Ionicons name="open-outline" size={22} color="#145498" />
         </TouchableOpacity>
       </Card>
+      {isModalVisible && <OrdenItemModal />}
     </View>
   );
 };
@@ -163,6 +340,9 @@ const styles = StyleSheet.create({
   fieldContainerAlt: {
     alignItems: "flex-end",
   },
+  fieldContainerAltStart: {
+    alignItems: "flex-start",
+  },
   fieldPrimary: {
     fontFamily: "jakarta-bold",
     fontSize: 16,
@@ -179,6 +359,7 @@ const styles = StyleSheet.create({
     fontFamily: "jakarta-semi-bold",
     fontSize: 16,
     marginLeft: 1,
+    marginEnd: 5,
     color: "#145498",
   },
   fieldSecondary: {
@@ -208,6 +389,89 @@ const styles = StyleSheet.create({
     right: 5,
     padding: 1,
   },
+  // New styles for different estado conditions
+  estadoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  estadoText: {
+    fontFamily: "jakarta-regular",
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  estadoIcon: {
+    marginRight: 1,
+  },
+  ordenEstado: {
+    color: "#2B7AA5", // Customize the style for "orden" estado
+  },
+  trabajoEstado: {
+    color: "orange", // Customize the style for "trabajo" estado
+  },
+  finalizadaEstado: {
+    color: "#952B8A", // Customize the style for "finalizada" estado
+  },
+  entregadaEstado: {
+    color: "green", // Customize the style for "entregada" estado
+  },
+  defaultEstado: {
+    color: "black", // Default style when no condition matches
+  },
+  inputsContainer: {
+    marginTop: 40, // Agregar el margen superior deseado aquí
+  },
+ //MODAL
+ modalContainer: {
+  flex: 1,
+  backgroundColor: "#fff",
+  padding: 20,
+},
+scrollContent: {
+  flexGrow: 1,
+},
+fieldPrimary: {
+  fontFamily: "jakarta-bold",
+  fontSize: 16,
+  marginBottom: 10,
+  color: "#333",
+},
+fieldTerciaryAlt: {
+  fontFamily: "jakarta-light",
+  fontSize: 16,
+  marginBottom: 10,
+  color: "#777",
+}, editButton: {
+  marginTop: 20,
+  alignSelf: "center",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: "#145498",
+  borderRadius: 5,
+},
+// Estilos para el botón "Guardar cambios"
+saveButton: {
+  marginTop: 20,
+  alignSelf: "center",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: "green", // Puedes personalizar el color para "Guardar cambios"
+  borderRadius: 5,
+},
+// Estilos para el botón "Cerrar"
+closeButton: {
+  position: "absolute",
+  top: 5,
+  right: 3,
+  paddingVertical: 5,
+  paddingHorizontal: 7,
+  backgroundColor: "#B92D4F",
+  borderRadius: 5,
+},
+ButtonText: {
+  fontFamily: "jakarta-semi-bold",
+  fontSize: 16,
+  color: "#fff",
+},
 });
 
 export default OrdenItem;

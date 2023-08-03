@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity, Modal, Pressable } from "react-native";
 import OrdenItem from "../../components/OrdenItem";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -17,7 +10,14 @@ const OrdenesServicioScreen = () => {
   const [ordenes, setOrdenes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [orderBy, setOrderBy] = useState(null);
-  // const serverIP = DB_HOST;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedField, setSelectedField] = useState("nombre_producto");
+  const [selectedOrder, setSelectedOrder] = useState("asc");
+  const serverIP = "http://192.168.1.15:8080"; // Replace with your server IP
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   const loadFonts = async () => {
     await Promise.all([
@@ -49,7 +49,7 @@ const OrdenesServicioScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.17:8080/workshop/ordenes`) 
+      .get(`${serverIP}/workshop/ordenes`)
       .then((response) => {
         setOrdenes(response.data);
       })
@@ -59,102 +59,228 @@ const OrdenesServicioScreen = () => {
   };
 
   const renderOrdenItem = ({ item }) => {
-    const fechaCapturaFormateada = new Date(
-      item.fecha_captura
-    ).toLocaleDateString("es-ES");
-    const fechaCompromisoFormateada = new Date(
-      item.fecha_compromiso
-    ).toLocaleDateString("es-ES");
+    const fechaCapturaFormateada = new Date(item.fecha_captura).toLocaleDateString("es-ES");
+    const fechaCompromisoFormateada = new Date(item.fecha_compromiso).toLocaleDateString("es-ES");
     return (
       <OrdenItem
-      folio={item.folio}
-      nombre_producto={item.nombre_producto}
-      fecha_captura={fechaCapturaFormateada}
-      fecha_compromiso={fechaCompromisoFormateada}
-      descripcion_producto={item.descripcion_producto}
-      nombre_cliente={item.nombre_cliente}
-      telefono_cliente={item.telefono_cliente}
-      whats_cliente={item.whats_cliente}
-    />
+        folio={item.folio}
+        nombre_producto={item.nombre_producto}
+        fecha_captura={fechaCapturaFormateada}
+        fecha_compromiso={fechaCompromisoFormateada}
+        descripcion_producto={item.descripcion_producto}
+        nombre_cliente={item.nombre_cliente}
+        telefono_cliente={item.telefono_cliente}
+        whats_cliente={item.whats_cliente}
+        estado={item.estado}
+        paso={item.paso_actual}
+      />
     );
-  }; 
+  };
 
   const handleFilterChange = (text) => {
     setFiltro(text);
     filterOrdenes(text);
   };
+
   const handleFilterPress = () => {
-    let nextOrderBy = null;
-    let toastText = "";
-
-    switch (orderBy) {
-      case null:
-        nextOrderBy = "nombre_producto";
-        toastText = "Ordenando por nombre de producto...";
-        break;
-      case "nombre_producto":
-        nextOrderBy = "fecha_captura";
-        toastText = "Ordenando por fecha de captura...";
-        break;
-      case "fecha_captura":
-        nextOrderBy = "nombre_cliente";
-        toastText = "Ordenando por nombre de cliente...";
-        break;
-      case "nombre_cliente":
-        nextOrderBy = null;
-        toastText = "Ordenamiento desactivado";
-        break;
-      default:
-        break;
-    }
-
-    setOrderBy(nextOrderBy);
-
-    // Realiza el ordenamiento solo si se ha seleccionado un tipo de orden válido
-    if (nextOrderBy) {
-      const sortedData = [...ordenes].sort((a, b) => {
-        switch (nextOrderBy) {
-          case "nombre_producto":
-            return a.nombre_producto.localeCompare(b.nombre_producto);
-          case "fecha_captura":
-            return new Date(a.fecha_captura) - new Date(b.fecha_captura);
-          case "nombre_cliente":
-            return a.nombre_cliente.localeCompare(b.nombre_cliente);
-          default:
-            return 0;
-        }
-      });
-
-      setOrdenes(sortedData);
-    }
-
-    Toast.show({
-      type: "info",
-      text1: "Filtrar",
-      text2: toastText,
-      position: "bottom",
-      bottomOffset: 60,
-      visibilityTime: 1500,
-      autoHide: true,
-    });
+    setIsModalVisible(true);
   };
 
-  const filterOrdenes = (text) => {
-    if (text === "") {
-      fetchData();
-    } else {
-      const filteredItems = ordenes.filter((item) => {
-        const productName = item.nombre_producto.toLowerCase();
-        const clientName = item.nombre_cliente.toLowerCase();
-        const searchTerm = text.toLowerCase();
+  const handleFieldSelect = (field) => {
+    setSelectedField(field);
+    setIsModalVisible(false);
+    applySorting(field, selectedOrder);
+  };
 
-        return (
-          productName.includes(searchTerm) || clientName.includes(searchTerm)
-        );
-      });
+  const handleOrderSelect = (order) => {
+    setSelectedOrder(order);
+    setIsModalVisible(false);
+    applySorting(selectedField, order);
+  };
 
-      setOrdenes(filteredItems);
-    }
+  const applySorting = (field, order) => {
+    const sortedData = [...ordenes].sort((a, b) => {
+      let result;
+      if (field === "estado") {
+        const estadoOrderAsc = ["Recibida", "Trabajo", "Finalizada", "Entregada"];
+        const estadoOrderDesc = [...estadoOrderAsc].reverse();
+        result =
+          order === "asc"
+            ? estadoOrderAsc.indexOf(a.estado) - estadoOrderAsc.indexOf(b.estado)
+            : estadoOrderDesc.indexOf(a.estado) - estadoOrderDesc.indexOf(b.estado);
+      } else {
+        switch (field) {
+          case "nombre_producto":
+            result = a.nombre_producto.localeCompare(b.nombre_producto);
+            break;
+          case "folio":
+            result = a.folio - b.folio;
+            break;
+          case "fecha_captura":
+            result = new Date(a.fecha_captura) - new Date(b.fecha_captura);
+            break;
+          case "fecha_compromiso":
+            result = new Date(a.fecha_compromiso) - new Date(b.fecha_compromiso);
+            break;
+          case "nombre_cliente":
+            result = a.nombre_cliente.localeCompare(b.nombre_cliente);
+            break;
+          default:
+            result = 0;
+            break;
+        }
+      }
+
+      return order === "asc" ? result : -result;
+    });
+
+    setOrdenes(sortedData);
+  };
+
+  const FilterModal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Ordenar por:</Text>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "nombre_producto" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("nombre_producto")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "nombre_producto" && styles.selectedItemText]}
+              >
+                Nombre del Producto
+              </Text>
+              {selectedField === "nombre_producto" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "folio" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("folio")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "folio" && styles.selectedItemText]}
+              >
+                Folio
+              </Text>
+              {selectedField === "folio" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "fecha_captura" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("fecha_captura")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "fecha_captura" && styles.selectedItemText]}
+              >
+                Fecha de Captura
+              </Text>
+              {selectedField === "fecha_captura" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "fecha_compromiso" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("fecha_compromiso")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "fecha_compromiso" && styles.selectedItemText]}
+              >
+                Fecha de Compromiso
+              </Text>
+              {selectedField === "fecha_compromiso" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "nombre_cliente" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("nombre_cliente")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "nombre_cliente" && styles.selectedItemText]}
+              >
+                Nombre de Cliente
+              </Text>
+              {selectedField === "nombre_cliente" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedField === "estado" && styles.selectedItem]}
+              onPress={() => handleFieldSelect("estado")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedField === "estado" && styles.selectedItemText]}
+              >
+                Estado
+              </Text>
+              {selectedField === "estado" && (
+                <Ionicons
+                  name={selectedOrder === "asc" ? "arrow-up" : "arrow-down"}
+                  size={18}
+                  color="#145498"
+                />
+              )}
+            </TouchableOpacity>
+            <Text style={styles.modalSubtitle}>Orden:</Text>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedOrder === "asc" && styles.selectedItem]}
+              onPress={() => handleOrderSelect("asc")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedOrder === "asc" && styles.selectedItemText]}
+              >
+                A-Z / Menor a Mayor
+              </Text>
+              {selectedOrder === "asc" && (
+                <Ionicons name="arrow-down" size={18} color="#145498" />
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.modalItem, selectedOrder === "desc" && styles.selectedItem]}
+              onPress={() => handleOrderSelect("desc")}
+            >
+              <Text
+                style={[styles.modalItemText, selectedOrder === "desc" && styles.selectedItemText]}
+              >
+                Z-A / Mayor a Menor
+              </Text>
+              {selectedOrder === "desc" && (
+                <Ionicons name="arrow-up" size={18} color="#145498" />
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   return (
@@ -169,10 +295,7 @@ const OrdenesServicioScreen = () => {
           onChangeText={handleFilterChange}
           value={filtro}
         />
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={() => handleFilterPress("nombre_producto")}
-        >
+        <TouchableOpacity style={styles.filterButton} onPress={toggleModal}>
           <Ionicons name="filter" size={24} color="#eef" />
         </TouchableOpacity>
       </View>
@@ -182,6 +305,9 @@ const OrdenesServicioScreen = () => {
         renderItem={renderOrdenItem}
       />
       <Toast ref={(ref) => Toast.setRef(ref)} />
+      {isModalVisible && (
+        <FilterModal />
+      )}
     </View>
   );
 };
@@ -218,7 +344,43 @@ const styles = StyleSheet.create({
     backgroundColor: "#145498",
     borderRadius: 30,
     padding: 10,
+  },  // Nuevos estilos para la Modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    width: "80%",
+  },
+  modalTitle: {
+    fontFamily: "jakarta-bold",
+    fontSize: 18,
+    marginBottom: 8,
+  },
+  modalItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  modalItemText: {
+    fontFamily: "jakarta-regular",
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  selectedItem: {
+    backgroundColor: "#f2f2f2",
+    borderRadius: 4,
+  },
+  selectedItemText: {
+    color: "#145498",
+  },
+
 });
 
 export default OrdenesServicioScreen;
