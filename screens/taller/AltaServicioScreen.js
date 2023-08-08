@@ -6,13 +6,17 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { Provider as PaperProvider } from "react-native-paper";
+import { DatePickerInput } from "react-native-paper-dates";
+import { enGB, registerTranslation } from "react-native-paper-dates";
+registerTranslation("en-GB", enGB);
 import axios from "axios";
 
-const AltaServicioScreen = ({ navigation }) => {
+const AltaServicioScreen = ({ navigation}) => {
   // Estados para cada paso del formulario
   //Step1
   const [folio, setFolio] = useState("");
@@ -24,10 +28,11 @@ const AltaServicioScreen = ({ navigation }) => {
   const [emailCliente, setEmailCliente] = useState("");
   //Step2
   const [showDropDown, setShowDropDown] = useState(false);
-  const [estado, setEstado] = useState("");
+  const [estadoEquipo, setEstado] = useState("");
   const [falla, setFalla] = useState("");
   const [equipo, setEquipo] = useState("");
-  const [fechaProbEnrega, setFechaProbEnrega] = useState("");
+  const [fechaCaptura, setFechaCaptura] = useState("");
+  const [fechaCompromiso, setfechaCompromiso] = useState("");
   const [dropdownOptions, setDropdownOptions] = useState([]);
   //Step3
   const [estatusOrden, setEstatusOrden] = useState("");
@@ -35,11 +40,14 @@ const AltaServicioScreen = ({ navigation }) => {
   const [marca, setMarca] = useState("");
   const [modelo, setModelo] = useState("");
   const [numSerie, setNumSerie] = useState("");
-  const [showTiempoReparacionDropDown, setShowTiempoReparacionDropDown] = useState(false);
+  const [showTiempoReparacionDropDown, setShowTiempoReparacionDropDown] =
+    useState(false);
   const [tiempoReparacion, setTiempoReparacion] = useState("");
-  const [showTipoReparacionDropDown, setShowTipoReparacionDropDown] = useState(false);
+  const [showTipoReparacionDropDown, setShowTipoReparacionDropDown] =
+    useState(false);
   const [tipoReparacion, setTipoReparacion] = useState("");
-  const [showTipoMantenimientoDropDown, setShowTipoMantenimientoDropDown] = useState(false);
+  const [showTipoMantenimientoDropDown, setShowTipoMantenimientoDropDown] =
+    useState(false);
   const [tipoMantenimiento, setTipoMantenimiento] = useState("");
   const [costoFlete, setCostoFlete] = useState("");
   const [costoDiagnostico, setCostoDiagnostico] = useState("");
@@ -120,9 +128,8 @@ const AltaServicioScreen = ({ navigation }) => {
       console.error("Error al obtener los productos:", error);
     }
   };
-
-   // Obtener el último folio utilizado en la tabla 'orden_cotizacion'
-   useEffect(() => {
+  // Obtener el último folio utilizado en la tabla 'orden_cotizacion'
+  useEffect(() => {
     axios
       .get("http://192.168.1.15:8080/workshop/ordenes/ultimoFolio")
       .then((response) => {
@@ -152,6 +159,11 @@ const AltaServicioScreen = ({ navigation }) => {
   useEffect(() => {
     fetchProductos();
   }, []);
+  // Función para establecer la fecha actual en fechaCaptura al cargar el formulario
+  useEffect(() => {
+    const currentDate = new Date(); // Obtener la fecha y hora actual
+    setFechaCaptura(currentDate); // Establecer la fecha actual en el estado fechaCaptura
+  }, []);
   // Control de navegación entre pasos
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -167,32 +179,34 @@ const AltaServicioScreen = ({ navigation }) => {
 
   const handleSubmit = () => {
     // Lógica para guardar los datos en la base de datos, etc.
-  const formData = {
-    //Datos del cliente
-    idCliente,
-    nombreCliente,
-    telCliente,
-    whatsCliente,
-    emailCliente,
-    direccionCliente,
-    //Datos fase 2
-    estado,
-    equipo,
-    falla,
-    fechaProbEnrega,
-    //Datos fase 3,
-    estatusOrden,
-    anticipo,
-    marca,
-    modelo,
-    numSerie,
-    tipoReparacion,
-    tiempoReparacion,
-    tipoMantenimiento,
-    costoFlete,
-    costoDiagnostico,
-    fkProducto,
-  };
+    const formData = {
+      //Datos del cliente
+      idCliente,
+      nombreCliente,
+      telCliente,
+      whatsCliente,
+      emailCliente,
+      direccionCliente,
+      //Datos fase 2
+      estadoEquipo,
+      equipo,
+      falla,
+      fechaCaptura,
+      fechaCompromiso,
+      //Datos fase 3,
+      estatusOrden,
+      anticipo,
+      marca,
+      modelo,
+      numSerie,
+      tipoReparacion,
+      tiempoReparacion,
+      tipoMantenimiento,
+      costoFlete,
+      costoDiagnostico,
+      fkProducto,
+
+    };
     // Realizar la solicitud POST al backend para guardar los datos
     axios
       .post(`http://192.168.1.15:8080/orders`, formData)
@@ -205,7 +219,6 @@ const AltaServicioScreen = ({ navigation }) => {
         // Manejo de errores
       });
   };
-  
 
   return (
     <PaperProvider>
@@ -355,26 +368,38 @@ const AltaServicioScreen = ({ navigation }) => {
               multiline
               numberOfLines={4}
               style={[styles.input, { minHeight: 100 }]}
-              value={estado}
+              value={estadoEquipo}
               onChangeText={setEstado}
-              label={"Estado"}
+              label={"Estado del equipo"}
               mode="outlined"
               activeOutlineColor="#145498"
             />
-            {/* Fecha prob entrega*/}
-            <TextInput
-              style={styles.input}
-              value={fechaProbEnrega}
-              onChangeText={setFechaProbEnrega}
-              label={"Fecha probable de entrega"}
-              mode="outlined"
-              activeOutlineColor="#145498"
-            />
+            <View style={styles.dateInputContainer}>
+              {/* Fecha probable de entrega */}
+              <DatePickerInput
+                locale="en-GB"
+                label={"Fecha compromiso"}
+                value={fechaCompromiso}
+                onChange={(date) => setfechaCompromiso(date)}
+                mode="outlined"
+                activeOutlineColor="#145498"
+              />
+              {/* Fecha captura */}
+              <DatePickerInput
+                locale="en-GB"
+                label={"Fecha captura"}
+                value={fechaCaptura}
+                onChange={(date) => setFechaCaptura(date)}
+                mode="outlined"
+                activeOutlineColor="#145498"
+              />
+            </View>
           </FormStep>
         )}
 
-        {currentStep === 3 && <FormStep>
-          <View style={styles.formRow}>
+        {currentStep === 3 && (
+          <FormStep>
+            <View style={styles.formRow}>
               <TextInput
                 style={[styles.input, styles.leftInput]}
                 value={estatusOrden}
@@ -402,7 +427,7 @@ const AltaServicioScreen = ({ navigation }) => {
                 mode="outlined"
                 activeOutlineColor="#145498"
               />
-             <TextInput
+              <TextInput
                 style={[styles.input, styles.inputInline]}
                 value={modelo}
                 label={"Modelo"}
@@ -420,44 +445,44 @@ const AltaServicioScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.formRow}>
-          {/* Dropdown para tiempoReparacion */}
-    <DropDown
-      label={"Tiempo de Reparación"}
-      mode={"outlined"}
-      visible={showTiempoReparacionDropDown}
-      showDropDown={() => setShowTiempoReparacionDropDown(true)}
-      onDismiss={() => setShowTiempoReparacionDropDown(false)}
-      value={tiempoReparacion}
-      setValue={setTiempoReparacion}
-      list={tiempoReparacionList}
-      dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-    />
+              {/* Dropdown para tiempoReparacion */}
+              <DropDown
+                label={"Tiempo de Reparación"}
+                mode={"outlined"}
+                visible={showTiempoReparacionDropDown}
+                showDropDown={() => setShowTiempoReparacionDropDown(true)}
+                onDismiss={() => setShowTiempoReparacionDropDown(false)}
+                value={tiempoReparacion}
+                setValue={setTiempoReparacion}
+                list={tiempoReparacionList}
+                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
+              />
 
-    {/* Dropdown para tipoReparacion */}
-    <DropDown
-      label={"Tipo de Reparación"}
-      mode={"outlined"}
-      visible={showTipoReparacionDropDown}
-      showDropDown={() => setShowTipoReparacionDropDown(true)}
-      onDismiss={() => setShowTipoReparacionDropDown(false)}
-      value={tipoReparacion}
-      setValue={setTipoReparacion}
-      list={tipoReparacionList}
-      dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-    />
+              {/* Dropdown para tipoReparacion */}
+              <DropDown
+                label={"Tipo de Reparación"}
+                mode={"outlined"}
+                visible={showTipoReparacionDropDown}
+                showDropDown={() => setShowTipoReparacionDropDown(true)}
+                onDismiss={() => setShowTipoReparacionDropDown(false)}
+                value={tipoReparacion}
+                setValue={setTipoReparacion}
+                list={tipoReparacionList}
+                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
+              />
 
-    {/* Dropdown para tipoMantenimiento */}
-    <DropDown
-      label={"Tipo de Mantenimiento"}
-      mode={"outlined"}
-      visible={showTipoMantenimientoDropDown}
-      showDropDown={() => setShowTipoMantenimientoDropDown(true)}
-      onDismiss={() => setShowTipoMantenimientoDropDown(false)}
-      value={tipoMantenimiento}
-      setValue={setTipoMantenimiento}
-      list={tipoMantenimientoList}
-      dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-    />
+              {/* Dropdown para tipoMantenimiento */}
+              <DropDown
+                label={"Tipo de Mantenimiento"}
+                mode={"outlined"}
+                visible={showTipoMantenimientoDropDown}
+                showDropDown={() => setShowTipoMantenimientoDropDown(true)}
+                onDismiss={() => setShowTipoMantenimientoDropDown(false)}
+                value={tipoMantenimiento}
+                setValue={setTipoMantenimiento}
+                list={tipoMantenimientoList}
+                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
+              />
             </View>
             <View style={styles.formRow}>
               <TextInput
@@ -478,7 +503,8 @@ const AltaServicioScreen = ({ navigation }) => {
                 activeOutlineColor="#145498"
               />
             </View>
-          </FormStep>}
+          </FormStep>
+        )}
 
         {/* Navegación entre pasos */}
         <View style={styles.navigationContainer}>
@@ -575,7 +601,7 @@ const styles = StyleSheet.create({
   },
   inputInline: {
     flex: 1,
-    marginHorizontal: 2, 
+    marginHorizontal: 2,
   },
   navigationContainer: {
     flexDirection: "row",
@@ -587,6 +613,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 4,
+    marginBottom: 10,
   },
   navigationButtonText: {
     color: "#fff",
@@ -601,6 +628,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     justifyContent: "space-between",
   },
-  // ...
+  // Estilo para el contenedor de los inputs de fecha
+  dateInputContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
 });
 export default AltaServicioScreen;
