@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
@@ -16,7 +15,9 @@ import { enGB, registerTranslation } from "react-native-paper-dates";
 registerTranslation("en-GB", enGB);
 import axios from "axios";
 
-const AltaServicioScreen = ({ navigation}) => {
+const AltaServicioScreen = ({ navigation, route }) => {
+  const { idUsuario } = route.params;
+  console.log("idUsuario en AltaServicio", idUsuario);
   // Estados para cada paso del formulario
   //Step1
   const [folio, setFolio] = useState("");
@@ -120,7 +121,7 @@ const AltaServicioScreen = ({ navigation}) => {
   // Función para obtener los productos desde el backend usando Axios
   const fetchProductos = async () => {
     try {
-      const response = await axios.get("http://192.168.1.15:8080/products");
+      const response = await axios.get("http://192.168.1.7:8080/products");
       // Filtrar solo el campo "nombre" de los productos
       const options = response.data.map((producto) => producto.nombre);
       setDropdownOptions(options);
@@ -131,7 +132,7 @@ const AltaServicioScreen = ({ navigation}) => {
   // Obtener el último folio utilizado en la tabla 'orden_cotizacion'
   useEffect(() => {
     axios
-      .get("http://192.168.1.15:8080/workshop/ordenes/ultimoFolio")
+      .get("http://192.168.1.7:8080/workshop/ordenes/ultimoFolio")
       .then((response) => {
         // Sumar 1 al último folio para obtener el nuevo folio
         const newFolio = response.data + 1;
@@ -145,7 +146,7 @@ const AltaServicioScreen = ({ navigation}) => {
   // Obtener el último idCliente utilizado en la tabla 'clientes'
   useEffect(() => {
     axios
-      .get("http://192.168.1.15:8080/clientes/ultimoIdCliente")
+      .get("http://192.168.1.7:8080/clientes/ultimoIdCliente")
       .then((response) => {
         // Sumar 1 al último idCliente para obtener el nuevo idCliente
         const newIdCliente = response.data + 1;
@@ -205,7 +206,6 @@ const AltaServicioScreen = ({ navigation}) => {
       costoFlete,
       costoDiagnostico,
       fkProducto,
-
     };
     // Realizar la solicitud POST al backend para guardar los datos
     axios
@@ -331,6 +331,15 @@ const AltaServicioScreen = ({ navigation}) => {
 
         {currentStep === 2 && (
           <FormStep>
+             {/* Mostrar el idUsuario en un TextInput */}
+          <TextInput
+            style={styles.input}
+            value={idUsuario} // Usar el valor del idUsuario aquí
+            label={"Usuario"}
+            mode="outlined"
+            activeOutlineColor="#145498"
+            disabled // Desactivar la edición
+          />
             {/* Equipo*/}
             <DropDown
               label={"Equipo"}

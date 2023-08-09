@@ -4,12 +4,15 @@ import {
   DrawerContentScrollView,
   DrawerItem,
 } from "@react-navigation/drawer";
+import { useSelector } from 'react-redux';
 import { Ionicons } from "@expo/vector-icons";
 import OrdenesServicioScreen from "./../screens/taller/OrdenesServicioScreen";
 import ExpedientesScreen from "./../screens/taller/ExpedientesScreen";
 import ReportesScreen from "./../screens/taller/ReportesScreen";
 import CotizacionScreen from "./../screens/taller/CotizacionScreen";
 import AltaServicioScreen from "./../screens/taller/AltaServicioScreen";
+import TrabajosScreen from "./../screens/taller/TrabajosScreen"
+
 const CustomDrawerContent = ({ state, descriptors, navigation }) => {
   return (
     <DrawerContentScrollView>
@@ -44,6 +47,8 @@ const CustomDrawerContent = ({ state, descriptors, navigation }) => {
                     ? "md-pricetag"
                     : label === "Reportes"
                     ? "stats-chart"
+                    : label === "Alta Trabajos"
+                    ? "clipboard"
                     : "person"
                 }
                 size={size}
@@ -61,13 +66,14 @@ const CustomDrawerContent = ({ state, descriptors, navigation }) => {
 
 const DrawerMenuTaller = () => {
   const Drawer = createDrawerNavigator();
-
+  const idUsuario = useSelector((state) => state.user.idUsuario); // Acceder al idUsuario desde Redux
+console.log("idUsuario en drawer menu", idUsuario)
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       drawerStyle={styles.drawer}
       overlayColor="transparent"
-      drawerContentOptions={{
+      screenOptions={{
         activeTintColor: "#145498",
         inactiveTintColor: "#8492A6",
         itemStyle: styles.drawerItem,
@@ -89,9 +95,16 @@ const DrawerMenuTaller = () => {
       {/* Resto de las pantallas */}
       <Drawer.Screen
         name="Alta Servicio"
+        initialParams={{idUsuario}}
         component={AltaServicioScreen}
         options={{ headerShown: false }}
       />
+      <Drawer.Screen 
+       name="Alta Trabajos"
+       component={TrabajosScreen}
+       options={{ headerShown: false }}>
+
+      </Drawer.Screen>
       <Drawer.Screen
         name="Cotizaciones"
         component={CotizacionScreen}

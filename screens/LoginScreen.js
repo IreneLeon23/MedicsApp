@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { DB_HOST } from "@env";
+import { useDispatch } from 'react-redux'; // Importar useDispatch de react-redux
+import { setIdUsuario } from './reducers/userReducer';
 import * as Font from "expo-font";
 
 const LoginScreen = ({ onLogin }) => {
+  const dispatch = useDispatch(); // Obtener la función dispatch
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
@@ -28,14 +37,19 @@ const LoginScreen = ({ onLogin }) => {
 
   useEffect(() => {
     loadFonts();
-  }, []);
-
-  const handleLogin = () => {
+  }, []);const handleLogin = () => {
     axios
-      .post(`http://192.168.1.8:8080/auth/login`, { email, password })
+      .post(`http://192.168.1.7:8080/auth/login`, { email, password })
       .then((response) => {
-        console.log(response.data);
-        onLogin(response.data);
+        const { privilege, idUsuario } = response.data;
+        if (privilege && idUsuario) {
+          console.log(`Privilegio: ${privilege}`);
+          console.log(`idUsuario: ${idUsuario}`);
+          dispatch(setIdUsuario(idUsuario)); // Enviar el idUsuario a Redux
+          onLogin({ privilege, idUsuario });
+        } else {
+          console.error("Respuesta del servidor inválida");
+        }
       })
       .catch((error) => {
         if (error.response && error.response.data) {
@@ -45,11 +59,6 @@ const LoginScreen = ({ onLogin }) => {
         }
       });
   };
-
-  const handleRegister = () => {
-    navigation.navigate("Registro"); // Navegar al registro
-  };
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -86,7 +95,10 @@ const LoginScreen = ({ onLogin }) => {
             onChangeText={setPassword}
             value={password}
           />
-          <TouchableOpacity style={styles.showPasswordButton} onPress={toggleShowPassword}>
+          <TouchableOpacity
+            style={styles.showPasswordButton}
+            onPress={toggleShowPassword}
+          >
             <Ionicons
               name={showPassword ? "eye-off-outline" : "eye-outline"}
               size={24}
@@ -102,12 +114,6 @@ const LoginScreen = ({ onLogin }) => {
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar sesión</Text>
       </TouchableOpacity>
-      <View style={styles.signupContainer}>
-        <Text style={styles.signupText}>¿No tienes cuenta?</Text>
-        <TouchableOpacity style={styles.signupButton} onPress={handleRegister}>
-          <Text style={styles.signupButtonText}>Registrarse</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -121,14 +127,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   welcomeText: {
-    fontFamily: "jakarta-bold",
+    // fontFamily: "jakarta-bold",
     fontSize: 30,
     color: "#081d33",
     marginBottom: 10,
     textAlign: "center",
   },
   subtitleText: {
-    fontFamily: "jakarta-regular",
+    // fontFamily: "jakarta-regular",
     fontSize: 15,
     color: "#37414d",
     marginBottom: 60,
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   labelText: {
-    fontFamily: "jakarta-light",
+    // fontFamily: "jakarta-light",
     color: "#37414d",
     fontSize: 16,
     marginLeft: 5,
@@ -197,7 +203,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   loginButtonText: {
-    fontFamily: "jakarta-bold",
+    fontFamily: "jakarta-semi-bold",
     color: "#fff",
     textAlign: "center",
     fontSize: 15,
@@ -206,15 +212,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-  },
-  signupText: {
-    fontFamily: "jakarta-regular",
-    color: "#37414d",
-    marginRight: 5,
-    fontSize: 15,
-  },
-  signupButton: {
-    alignSelf: "flex-start",
   },
   signupButtonText: {
     fontFamily: "jakarta-semi-bold",

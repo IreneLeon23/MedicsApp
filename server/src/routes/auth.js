@@ -20,25 +20,25 @@ router.post("/login", function (req, res) {
               // Usuario con privilegio de cliente
               res
                 .status(200)
-                .json({ privilege: "cliente", idUsuario: usuario.id_usuario });
+                .json({ privilege: "cliente", idUsuario: usuario.clave_usuario });
               break;
             case "vendedor":
               // Usuario con privilegio de vendedor
               res
                 .status(200)
-                .json({ privilege: "vendedor", idUsuario: usuario.id_usuario });
+                .json({ privilege: "vendedor", idUsuario: usuario.clave_usuario });
               break;
             case "taller":
               // Usuario con privilegio de taller
               res
                 .status(200)
-                .json({ privilege: "taller", idUsuario: usuario.id_usuario });
+                .json({ privilege: "taller", idUsuario: usuario.clave_usuario });
               break;
               case "administrador":
                 // Usuario con privilegio de taller
                 res
                   .status(200)
-                  .json({ privilege: "administrador", idUsuario: usuario.id_usuario });
+                  .json({ privilege: "administrador", idUsuario: usuario.clave_usuario });
                   //Usuario con privilegio de administrador
                 break;
             default:

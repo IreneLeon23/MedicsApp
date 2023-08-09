@@ -2,9 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || "8080";
-const connection = require("./connection");
 const authRoutes = require("./routes/auth");
-const profileRoutes = require("./routes/profile");
 const getOrdenes = require("./routes/getOrdenes");
 const getReportes = require("./routes/getReportes");
 const getCotizacion = require("./routes/getCotizacion");
@@ -13,6 +11,7 @@ const getProduct = require("./routes/getProduct");
 const getExpedientes = require("./routes/getExpedientes");
 const getClient = require("./routes/getClient")
 const postOrdenes = require("./routes/postOrden")
+const postTrabajos = require("./routes/postTrabajos")
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -20,15 +19,19 @@ app.get("/", function (req, res) {
 });
 
 app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
+//Obtener datos para tablas de taller
 app.use("/workshop", getOrdenes);
 app.use("/workshop", getExpedientes);
 app.use("/workshop",getCotizacion);
 app.use("/workshop",getReportes);
+
 app.use("/users", getUser);
 app.use("/products", getProduct);
-app.use("/orders", postOrdenes)
 app.use("/clientes", getClient)
+
+//Envio de formularios
+app.use("/orders", postOrdenes)
+app.use("/trabajos", postTrabajos)
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);

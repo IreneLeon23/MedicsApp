@@ -95,30 +95,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   mainText: {
-    fontFamily: "jakarta-semi-bold",
+    // fontFamily: "jakarta-semi-bold",
     color: "#131517",
     fontSize: 16,
     textAlign: "center",
   },
   alterText: {
-    fontFamily: "jakarta-semi-bold",
+    // fontFamily: "jakarta-semi-bold",
     color: "#E7E7E7",
     fontSize: 16,
     textAlign: "center",
   },
-  textContainer: {
-    fontFamily: "jakarta-semi-bold",
-    flexDirection: "row",
-    alignItems: "baseline",
-    marginTop: 20,
-  },
-  refText: {
-    fontFamily: "jakarta-semi-bold",
-    textDecorationLine: "underline",
-    color: "#E7E7E7",
-    fontSize: 14,
-  },
-  refButton: {},
+
 });
 
 export default OptionsScreen;
