@@ -31,7 +31,7 @@ const CotizacionScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.7:8080/workshop/cotizacion`) 
+      .get(`http://192.168.1.14:8080/workshop/cotizacion`) 
       .then((response) => {
         setCotizaciones(response.data);
       })

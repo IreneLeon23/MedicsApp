@@ -12,6 +12,7 @@ const getExpedientes = require("./routes/getExpedientes");
 const getClient = require("./routes/getClient")
 const postOrdenes = require("./routes/postOrden")
 const postTrabajos = require("./routes/postTrabajos")
+const getTrabajos = require("./routes/getTrabajos")
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -24,10 +25,12 @@ app.use("/workshop", getOrdenes);
 app.use("/workshop", getExpedientes);
 app.use("/workshop",getCotizacion);
 app.use("/workshop",getReportes);
+app.use("/workshop",getTrabajos)
 
 app.use("/users", getUser);
 app.use("/products", getProduct);
 app.use("/clientes", getClient)
+
 
 //Envio de formularios
 app.use("/orders", postOrdenes)

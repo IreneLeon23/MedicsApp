@@ -12,6 +12,7 @@ import ReportesScreen from "./../screens/taller/ReportesScreen";
 import CotizacionScreen from "./../screens/taller/CotizacionScreen";
 import AltaServicioScreen from "./../screens/taller/AltaServicioScreen";
 import TrabajosScreen from "./../screens/taller/TrabajosScreen"
+import TrabajosGenScreen from "../screens/taller/TrabajosGenScreen";
 
 const CustomDrawerContent = ({ state, descriptors, navigation }) => {
   return (
@@ -49,6 +50,8 @@ const CustomDrawerContent = ({ state, descriptors, navigation }) => {
                     ? "stats-chart"
                     : label === "Alta Trabajos"
                     ? "clipboard"
+                    : label === "Trabajos"
+                    ? "hammer"
                     : "person"
                 }
                 size={size}
@@ -90,6 +93,11 @@ console.log("idUsuario en drawer menu", idUsuario)
       <Drawer.Screen
         name="Expedientes"
         component={ExpedientesScreen}
+        options={{ headerShown: false }}
+      />
+        <Drawer.Screen
+        name="Trabajos"
+        component={TrabajosGenScreen}
         options={{ headerShown: false }}
       />
       {/* Resto de las pantallas */}

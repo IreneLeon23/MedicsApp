@@ -13,7 +13,7 @@ const OrdenesServicioScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedField, setSelectedField] = useState("nombre_producto");
   const [selectedOrder, setSelectedOrder] = useState("asc");
-  const serverIP = "http://192.168.1.7:8080"; // Replace with your server IP
+  const serverIP = "http://192.168.1.14:8080"; // Replace with your server IP
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);

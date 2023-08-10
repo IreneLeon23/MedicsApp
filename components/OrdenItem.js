@@ -8,14 +8,18 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
+import axios from "axios";
 import { Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
 import * as Font from "expo-font";
+import OrdenModal from "./OrdenModal";
+import TrabajosItem from "./TrabajosItem"
 
 const OrdenItem = ({
+  fk_orden_cotizacion,
   folio,
   nombre_producto,
   nombre_cliente,
@@ -24,104 +28,27 @@ const OrdenItem = ({
   descripcion_producto,
   telefono_cliente,
   whats_cliente,
-  paso,
   estado,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
-  };
-
-  const OrdenItemModal = () => {
-    const [editMode, setEditMode] = useState(false);
-
-    // Add state variables to store updated values
-    const [updatedFolio, setUpdatedFolio] = useState(folio); // Inicializar con el valor actual
-    const [updatedNombreProducto, setUpdatedNombreProducto] = useState(nombre_producto); // Inicializar con el valor actual
-    const [updatedNombreCliente, setUpdatedNombreCliente] = useState(nombre_cliente); // Inicializar con el valor actual
-    // Add other state variables for other fields if needed
-
-    const toggleModal = () => {
-      setIsModalVisible(!isModalVisible);
-    };
-
-    const toggleEditMode = () => {
-      setEditMode(!editMode);
-    };
-
-    // Implement a function to handle saving changes
-    const handleSaveChanges = () => {
-      // ... Lógica para guardar los cambios ...
-
-      // After saving changes, exit edit mode
-      toggleEditMode();
-    };
-
-
-    return (
-      <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        onRequestClose={toggleModal}
-      >
-        <View style={styles.modalContainer}>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
-            {/* Show TextInput for each field */}
-            <View style={styles.inputsContainer}>
-            <TextInput
-              style={[styles.input, styles.leftInput]}
-              value={editMode ? updatedFolio.toString() : folio.toString()}
-              label={"Folio"}
-              onChangeText={setUpdatedFolio}
-              mode="outlined"
-              activeOutlineColor="#145498"
-              disabled={!editMode}
-            />
-
-            <TextInput
-              style={[styles.input, styles.leftInput]}
-              value={editMode ? updatedNombreProducto : nombre_producto}
-              label={"Nombre del Producto"}
-              onChangeText={setUpdatedNombreProducto}
-              mode="outlined"
-              activeOutlineColor="#145498"
-              disabled={!editMode}
-            />
-
-            <TextInput
-              style={[styles.input, styles.leftInput]}
-              value={editMode ? updatedNombreCliente : nombre_cliente}
-              label={"Nombre del Cliente"}
-              onChangeText={setUpdatedNombreCliente}
-              mode="outlined"
-              activeOutlineColor="#145498"
-              disabled={!editMode}
-            />
-            </View>
-            {/* Add other TextInput components for other fields */}
-
-            {/* Botón de "Editar" o "Guardar cambios" */}
-            <TouchableOpacity
-              style={editMode ? styles.saveButton : styles.editButton}
-              onPress={editMode ? handleSaveChanges : toggleEditMode}
-            >
-              <Text style={styles.ButtonText}>
-                {editMode ? "Guardar Cambios" : "Editar"}
-              </Text>
-            </TouchableOpacity>
-
-            {/* Botón de "Cerrar" */}
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.ButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </Modal>
-    );
-  };
-
+  const [trabajoInfo, setTrabajoInfo] = useState([]);
   const [iconName, setIconName] = useState("");
+
+  useEffect(() => {
+    // Cargar información de trabajos al montar el componente
+    axios
+      .get(
+        `http://192.168.1.14:8080/workshop/trabajos?fk_orden_cotizacion=${folio}`
+      )
+      .then((response) => {
+        setTrabajoInfo(response.data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener la información del trabajo:", error);
+      });
+
+    // ... Resto del código ...
+  }, [estado, folio]);
 
   useEffect(() => {
     // Set the appropriate icon name based on the estado
@@ -307,11 +234,21 @@ const OrdenItem = ({
             </Text>
           </View>
         </Card.Content>
-        <TouchableOpacity style={styles.optionButton} onPress={toggleModal}>
-          <Ionicons name="open-outline" size={22} color="#145498" />
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionButton} onPress={() => setIsModalVisible(true)}>
+            <Ionicons name="open-outline" size={22} color="#145498" />
+          </TouchableOpacity>
       </Card>
-      {isModalVisible && <OrdenItemModal />}
+      {/* Modal para editar y ver detalles de la orden */}
+      <OrdenModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        ordenData={{
+          folio,
+          nombre_producto,
+          nombre_cliente,
+          // Resto de la información de la orden
+        }}
+      />
     </View>
   );
 };
@@ -420,58 +357,59 @@ const styles = StyleSheet.create({
   inputsContainer: {
     marginTop: 40, // Agregar el margen superior deseado aquí
   },
- //MODAL
- modalContainer: {
-  flex: 1,
-  backgroundColor: "#fff",
-  padding: 20,
-},
-scrollContent: {
-  flexGrow: 1,
-},
-fieldPrimary: {
-  fontFamily: "jakarta-bold",
-  fontSize: 16,
-  marginBottom: 10,
-  color: "#333",
-},
-fieldTerciaryAlt: {
-  fontFamily: "jakarta-light",
-  fontSize: 16,
-  marginBottom: 10,
-  color: "#777",
-}, editButton: {
-  marginTop: 20,
-  alignSelf: "center",
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  backgroundColor: "#145498",
-  borderRadius: 5,
-},
-// Estilos para el botón "Guardar cambios"
-saveButton: {
-  marginTop: 20,
-  alignSelf: "center",
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  backgroundColor: "green", // Puedes personalizar el color para "Guardar cambios"
-  borderRadius: 5,
-},
-// Estilos para el botón "Cerrar"
-closeButton: {
-  position: "absolute",
-  top: 5,
-  right: 3,
-  paddingVertical: 5,
-  paddingHorizontal: 7,
-  backgroundColor: "#B92D4F",
-  borderRadius: 5,
-},
-ButtonText: {
-  fontFamily: "jakarta-semi-bold",
-  fontSize: 16,
-  color: "#fff",
-},
+  //MODAL
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  fieldPrimary: {
+    fontFamily: "jakarta-bold",
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#333",
+  },
+  fieldTerciaryAlt: {
+    fontFamily: "jakarta-light",
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#777",
+  },
+  editButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#145498",
+    borderRadius: 5,
+  },
+  // Estilos para el botón "Guardar cambios"
+  saveButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "green", // Puedes personalizar el color para "Guardar cambios"
+    borderRadius: 5,
+  },
+  // Estilos para el botón "Cerrar"
+  closeButton: {
+    position: "absolute",
+    top: 5,
+    right: 3,
+    paddingVertical: 5,
+    paddingHorizontal: 7,
+    backgroundColor: "#B92D4F",
+    borderRadius: 5,
+  },
+  ButtonText: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 16,
+    color: "#fff",
+  },
 });
 
 export default OrdenItem;

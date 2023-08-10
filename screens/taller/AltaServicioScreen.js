@@ -121,7 +121,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
   // Función para obtener los productos desde el backend usando Axios
   const fetchProductos = async () => {
     try {
-      const response = await axios.get("http://192.168.1.7:8080/products");
+      const response = await axios.get("http://192.168.1.14:8080/products");
       // Filtrar solo el campo "nombre" de los productos
       const options = response.data.map((producto) => producto.nombre);
       setDropdownOptions(options);
@@ -132,7 +132,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
   // Obtener el último folio utilizado en la tabla 'orden_cotizacion'
   useEffect(() => {
     axios
-      .get("http://192.168.1.7:8080/workshop/ordenes/ultimoFolio")
+      .get("http://192.168.1.14:8080/workshop/ordenes/ultimoFolio")
       .then((response) => {
         // Sumar 1 al último folio para obtener el nuevo folio
         const newFolio = response.data + 1;
@@ -146,7 +146,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
   // Obtener el último idCliente utilizado en la tabla 'clientes'
   useEffect(() => {
     axios
-      .get("http://192.168.1.7:8080/clientes/ultimoIdCliente")
+      .get("http://192.168.1.14:8080/clientes/ultimoIdCliente")
       .then((response) => {
         // Sumar 1 al último idCliente para obtener el nuevo idCliente
         const newIdCliente = response.data + 1;

@@ -11,7 +11,7 @@ import store from './store'; // Importar la configuración del almacenamiento Re
 import LoginScreen from "./screens/LoginScreen";
 import OptionScreen from "./screens/OptionScreen";
 import ClientAdminScreen from "./screens/administrador/ClientAdminScreen";
-import MenuAdmin from "./components/MenuAdmin";
+// import MenuAdmin from "./components/MenuAdmin";
 import DrawerMenuTaller from "./components/DrawerMenuTaller";
 
 const Tab = createBottomTabNavigator();
