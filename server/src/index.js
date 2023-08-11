@@ -11,6 +11,7 @@ const getProduct = require("./routes/getProduct");
 const getExpedientes = require("./routes/getExpedientes");
 const getClient = require("./routes/getClient")
 const postOrdenes = require("./routes/postOrden")
+const putOrden = require("./routes/putOrden");
 const postTrabajos = require("./routes/postTrabajos")
 const getTrabajos = require("./routes/getTrabajos")
 app.use(bodyParser.json());
@@ -34,7 +35,10 @@ app.use("/clientes", getClient)
 
 //Envio de formularios
 app.use("/orders", postOrdenes)
+app.use("/orders", putOrden)
 app.use("/trabajos", postTrabajos)
+
+
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);

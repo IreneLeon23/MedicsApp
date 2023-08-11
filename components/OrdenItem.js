@@ -17,7 +17,6 @@ import { Provider as PaperProvider } from "react-native-paper";
 import * as Font from "expo-font";
 import OrdenModal from "./OrdenModal";
 import TrabajosItem from "./TrabajosItem"
-
 const OrdenItem = ({
   fk_orden_cotizacion,
   folio,
@@ -29,26 +28,25 @@ const OrdenItem = ({
   telefono_cliente,
   whats_cliente,
   estado,
+  equipo,
+  estado_equipo,
+  paso,
+  falla,
+  anticipo,
+  marca,
+  modelo,
+  numero_serie,
+  tiempo_reparacion,
+  tipo_reparacion,
+  tipo_mantenimiento,
+  costo_flete,
+  costo_visita_diag,
+  dificultad,
+  comentario_cotizacion,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [trabajoInfo, setTrabajoInfo] = useState([]);
   const [iconName, setIconName] = useState("");
-
-  useEffect(() => {
-    // Cargar información de trabajos al montar el componente
-    axios
-      .get(
-        `http://192.168.1.14:8080/workshop/trabajos?fk_orden_cotizacion=${folio}`
-      )
-      .then((response) => {
-        setTrabajoInfo(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener la información del trabajo:", error);
-      });
-
-    // ... Resto del código ...
-  }, [estado, folio]);
 
   useEffect(() => {
     // Set the appropriate icon name based on the estado
@@ -239,14 +237,34 @@ const OrdenItem = ({
           </TouchableOpacity>
       </Card>
       {/* Modal para editar y ver detalles de la orden */}
-      <OrdenModal
+   <OrdenModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         ordenData={{
           folio,
           nombre_producto,
           nombre_cliente,
-          // Resto de la información de la orden
+          fecha_captura,
+          fecha_compromiso,
+          descripcion_producto,
+          telefono_cliente,
+          whats_cliente,
+          estado,
+          equipo,
+          estado_equipo,
+          paso,
+          falla,
+          anticipo,
+          marca,
+          modelo,
+          numero_serie,
+          tiempo_reparacion,
+          tipo_reparacion,
+          tipo_mantenimiento,
+          costo_flete,
+          costo_visita_diag,
+          dificultad,
+          comentario_cotizacion,
         }}
       />
     </View>
