@@ -7,17 +7,25 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { TextInput } from "react-native-paper";
-import DropDown from "react-native-paper-dropdown";
 import { Provider as PaperProvider } from "react-native-paper";
-import { DatePickerInput } from "react-native-paper-dates";
 import { enGB, registerTranslation } from "react-native-paper-dates";
+import FormStep from "../../components/ordersForm/FormStep";
+import Step1 from "../../components/ordersForm/Step1";
+import Step2 from "../../components/ordersForm/Step2";
+import Step3 from "../../components/ordersForm/Step3";
+import { styles } from "../../components/ordersForm/OrderStyles"; // Importa los estilos
 registerTranslation("en-GB", enGB);
 import axios from "axios";
 
 const AltaServicioScreen = ({ navigation, route }) => {
-  const { idUsuario } = route.params;
-  console.log("idUsuario en AltaServicio", idUsuario);
+  const [usuario, setUsuario] = useState("");
+  useEffect(() => {
+    // Obtener el valor de idUsuario de route.params
+    const { idUsuario } = route.params;
+    // Actualizar el estado usuario con el valor de idUsuario
+    setUsuario(idUsuario);
+  }, []);
+
   // Estados para cada paso del formulario
   //Step1
   const [folio, setFolio] = useState("");
@@ -32,6 +40,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
   const [estadoEquipo, setEstado] = useState("");
   const [falla, setFalla] = useState("");
   const [equipo, setEquipo] = useState("");
+  const [isNewEquipo, setIsNewEquipo] = useState(false);
   const [fechaCaptura, setFechaCaptura] = useState("");
   const [fechaCompromiso, setfechaCompromiso] = useState("");
   const [dropdownOptions, setDropdownOptions] = useState([]);
@@ -249,269 +258,85 @@ const AltaServicioScreen = ({ navigation, route }) => {
             ]}
           />
         </View>
+
         {currentStep === 1 && (
           <FormStep>
-            <View style={styles.formRow}>
-              {/* Folio */}
-              <TextInput
-                style={[styles.input, styles.leftInput]}
-                value={folio}
-                label={"Folio"}
-                onChangeText={setFolio}
-                mode="outlined"
-                activeOutlineColor="#145498"
-                disabled={"true"}
-              />
-
-              {/* Espacio entre los campos */}
-              <View style={styles.inputSpacer} />
-
-              {/* ID Cliente */}
-              <TextInput
-                style={[styles.input, styles.rightInput]}
-                value={idCliente}
-                label={"ID Cliente"}
-                onChangeText={setIdCliente}
-                mode="outlined"
-                activeOutlineColor="#145498"
-                disabled={"true"}
-              />
-            </View>
-
-            {/* Nombre del Cliente */}
-            <TextInput
-              style={styles.input}
-              value={nombreCliente}
-              onChangeText={setNombreCliente}
-              label={"Nombre"}
-              mode="outlined"
-              activeOutlineColor="#145498"
-            />
-            {/* Direccion del Cliente */}
-            <TextInput
-              style={styles.input}
-              value={direccionCliente}
-              onChangeText={setDireccionCliente}
-              label={"Direccion"}
-              mode="outlined"
-              activeOutlineColor="#145498"
-            />
-            <View style={styles.formRow}>
-              {/* Telefono del Cliente */}
-              <TextInput
-                style={[styles.input, styles.leftInput]}
-                value={telCliente}
-                onChangeText={setTelCliente}
-                label={"Teléfono"}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              <View style={styles.inputSpacer}></View>
-              {/* Whatsapp del Cliente */}
-              <TextInput
-                style={[styles.input, styles.rightInput]}
-                value={whatsCliente}
-                onChangeText={setWhatsCliente}
-                label={"Whatsapp"}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-            </View>
-            {/* Email del Cliente */}
-            <TextInput
-              style={styles.input}
-              value={emailCliente}
-              onChangeText={setEmailCliente}
-              label={"Email"}
-              mode="outlined"
-              activeOutlineColor="#145498"
+            <Step1
+              folio={folio}
+              idCliente={idCliente}
+              nombreCliente={nombreCliente}
+              direccionCliente={direccionCliente}
+              telCliente={telCliente}
+              whatsCliente={whatsCliente}
+              emailCliente={emailCliente}
+              setFolio={setFolio}
+              setIdCliente={setIdCliente}
+              setNombreCliente={setNombreCliente}
+              setDireccionCliente={setDireccionCliente}
+              setTelCliente={setTelCliente}
+              setWhatsCliente={setWhatsCliente}
+              setEmailCliente={setEmailCliente}
             />
           </FormStep>
         )}
 
         {currentStep === 2 && (
           <FormStep>
-             {/* Mostrar el idUsuario en un TextInput */}
-          <TextInput
-            style={styles.input}
-            value={idUsuario} // Usar el valor del idUsuario aquí
-            label={"Usuario"}
-            mode="outlined"
-            activeOutlineColor="#145498"
-            disabled // Desactivar la edición
-          />
-            {/* Equipo*/}
-            <DropDown
-              label={"Equipo"}
-              mode="outlined"
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={equipo}
-              setValue={setEquipo}
-              list={dropdownOptions.map((option, index) => ({
-                label: option,
-                value: index,
-              }))}
-              activeColor="#145498" // Color activo del input
-              dropDownItemTextStyle={{
-                // Estilos del texto de cada opción
-                fontFamily: "jakarta-regular", // Fuente del texto
-                fontSize: 16, // Tamaño de fuente
-                color: "#145498", // Color del texto
-              }}
+            <Step2
+              usuario={usuario}
+              equipo={equipo}
+              isNewEquipo={isNewEquipo}
+              showDropDown={showDropDown}
+              setShowDropDown={setShowDropDown}
+              setEquipo={setEquipo}
+              estadoEquipo={estadoEquipo}
+              falla={falla}
+              setFalla={setFalla}
+              setStateFunc={setEstado}
+              fechaCaptura={fechaCaptura}
+              fechaCompromiso={fechaCompromiso}
+              dropdownOptions={dropdownOptions}
+              tiempoReparacionList={tiempoReparacionList}
+              setfechaCompromiso={setfechaCompromiso}
+              setFechaCaptura={setFechaCaptura}
             />
-            {/* Falla*/}
-            <TextInput
-              multiline
-              numberOfLines={4}
-              style={[styles.input, { minHeight: 100 }]}
-              value={falla}
-              onChangeText={setFalla}
-              label={"Falla"}
-              mode="outlined"
-              activeOutlineColor="#145498"
-            />
-            {/* Estado*/}
-            <TextInput
-              multiline
-              numberOfLines={4}
-              style={[styles.input, { minHeight: 100 }]}
-              value={estadoEquipo}
-              onChangeText={setEstado}
-              label={"Estado del equipo"}
-              mode="outlined"
-              activeOutlineColor="#145498"
-            />
-            <View style={styles.dateInputContainer}>
-              {/* Fecha probable de entrega */}
-              <DatePickerInput
-                locale="en-GB"
-                label={"Fecha compromiso"}
-                value={fechaCompromiso}
-                onChange={(date) => setfechaCompromiso(date)}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              {/* Fecha captura */}
-              <DatePickerInput
-                locale="en-GB"
-                label={"Fecha captura"}
-                value={fechaCaptura}
-                onChange={(date) => setFechaCaptura(date)}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-            </View>
           </FormStep>
         )}
-
         {currentStep === 3 && (
           <FormStep>
-            <View style={styles.formRow}>
-              <TextInput
-                style={[styles.input, styles.leftInput]}
-                value={estatusOrden}
-                label={"Estatus orden"}
-                onChangeText={setEstatusOrden}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              <View style={styles.inputSpacer} />
-              <TextInput
-                style={[styles.input, styles.rightInput]}
-                value={anticipo}
-                label={"Anticipo"}
-                onChangeText={setAnticipo}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-            </View>
-            <View style={styles.formRow}>
-              <TextInput
-                style={[styles.input, styles.inputInline]}
-                value={marca}
-                label={"Marca"}
-                onChangeText={setMarca}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              <TextInput
-                style={[styles.input, styles.inputInline]}
-                value={modelo}
-                label={"Modelo"}
-                onChangeText={setModelo}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              <TextInput
-                style={[styles.input, styles.inputInline]}
-                value={numSerie}
-                label={"No. serie"}
-                onChangeText={setNumSerie}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-            </View>
-            <View style={styles.formRow}>
-              {/* Dropdown para tiempoReparacion */}
-              <DropDown
-                label={"Tiempo de Reparación"}
-                mode={"outlined"}
-                visible={showTiempoReparacionDropDown}
-                showDropDown={() => setShowTiempoReparacionDropDown(true)}
-                onDismiss={() => setShowTiempoReparacionDropDown(false)}
-                value={tiempoReparacion}
-                setValue={setTiempoReparacion}
-                list={tiempoReparacionList}
-                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-              />
-
-              {/* Dropdown para tipoReparacion */}
-              <DropDown
-                label={"Tipo de Reparación"}
-                mode={"outlined"}
-                visible={showTipoReparacionDropDown}
-                showDropDown={() => setShowTipoReparacionDropDown(true)}
-                onDismiss={() => setShowTipoReparacionDropDown(false)}
-                value={tipoReparacion}
-                setValue={setTipoReparacion}
-                list={tipoReparacionList}
-                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-              />
-
-              {/* Dropdown para tipoMantenimiento */}
-              <DropDown
-                label={"Tipo de Mantenimiento"}
-                mode={"outlined"}
-                visible={showTipoMantenimientoDropDown}
-                showDropDown={() => setShowTipoMantenimientoDropDown(true)}
-                onDismiss={() => setShowTipoMantenimientoDropDown(false)}
-                value={tipoMantenimiento}
-                setValue={setTipoMantenimiento}
-                list={tipoMantenimientoList}
-                dropDownContainerMaxHeight={150} // Ajusta la altura máxima del dropdown
-              />
-            </View>
-            <View style={styles.formRow}>
-              <TextInput
-                style={[styles.input, styles.leftInput]}
-                value={costoFlete}
-                label={"Costo flete"}
-                onChangeText={setCostoFlete}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-              <View style={styles.inputSpacer} />
-              <TextInput
-                style={[styles.input, styles.rightInput]}
-                value={costoDiagnostico}
-                label={"Costo diagnostico"}
-                onChangeText={setCostoDiagnostico}
-                mode="outlined"
-                activeOutlineColor="#145498"
-              />
-            </View>
+            <Step3
+              estatusOrden={estatusOrden}
+              anticipo={anticipo}
+              marca={marca}
+              modelo={modelo}
+              numSerie={numSerie}
+              showTiempoReparacionDropDown={showTiempoReparacionDropDown}
+              setShowTiempoReparacionDropDown={setShowTiempoReparacionDropDown}
+              tiempoReparacion={tiempoReparacion}
+              showTipoReparacionDropDown={showTipoReparacionDropDown}
+              setShowTipoReparacionDropDown={setShowTipoReparacionDropDown}
+              tipoReparacion={tipoReparacion}
+              showTipoMantenimientoDropDown={showTipoMantenimientoDropDown}
+              setShowTipoMantenimientoDropDown={
+                setShowTipoMantenimientoDropDown
+              }
+              tipoMantenimiento={tipoMantenimiento}
+              costoFlete={costoFlete}
+              costoDiagnostico={costoDiagnostico}
+              tipoReparacionList={tipoReparacionList}
+              tiempoReparacionList={tiempoReparacionList}
+              tipoMantenimientoList={tipoMantenimientoList}
+              setEstatusOrden={setEstatusOrden}
+              setAnticipo={setAnticipo}
+              setMarca={setMarca}
+              setModelo={setModelo}
+              setNumSerie={setNumSerie}
+              setTipoReparacion={setTipoReparacion}
+              setTiempoReparacion={setTiempoReparacion}
+              setTipoMantenimiento={setTipoMantenimiento}
+              setCostoFlete={setCostoFlete}
+              setCostoDiagnostico={setCostoDiagnostico}
+            />
           </FormStep>
         )}
 
@@ -548,100 +373,4 @@ const AltaServicioScreen = ({ navigation, route }) => {
     </PaperProvider>
   );
 };
-
-const FormStep = ({ children }) => {
-  return <View style={styles.formStep}>{children}</View>;
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 40,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  headerTitle: {
-    fontFamily: "jakarta-medium",
-    fontSize: 18,
-    color: "#145498",
-    marginLeft: 15,
-  },
-  // Estilos para el formulario multi-step
-  formStep: {
-    flex: 1,
-  },
-  statusBar: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  statusBarStep: {
-    width: 100,
-    height: 7,
-    borderRadius: 8,
-    backgroundColor: "#ccc",
-    marginHorizontal: 5,
-  },
-  statusBarStepActive: {
-    backgroundColor: "#145498",
-  },
-  formRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 5,
-  },
-  leftInput: {
-    flex: 1,
-    marginRight: 1,
-  },
-  rightInput: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  inputSpacer: {
-    width: 1,
-  },
-  inputInline: {
-    flex: 1,
-    marginHorizontal: 2,
-  },
-  navigationContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  navigationButton: {
-    backgroundColor: "#145498",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-    marginBottom: 10,
-  },
-  navigationButtonText: {
-    color: "#fff",
-    fontFamily: "jakarta-semi-bold",
-    fontSize: 16,
-    textAlign: "center",
-  },
-  // Estilos para los campos del formulario
-  fieldContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    justifyContent: "space-between",
-  },
-  // Estilo para el contenedor de los inputs de fecha
-  dateInputContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-});
 export default AltaServicioScreen;

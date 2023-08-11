@@ -70,7 +70,6 @@ const CustomDrawerContent = ({ state, descriptors, navigation }) => {
 const DrawerMenuTaller = () => {
   const Drawer = createDrawerNavigator();
   const idUsuario = useSelector((state) => state.user.idUsuario); // Acceder al idUsuario desde Redux
-console.log("idUsuario en drawer menu", idUsuario)
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}

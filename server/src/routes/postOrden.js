@@ -8,7 +8,17 @@ router.post("/", (req, res) => {
   const formData = req.body;
 
   // Verificar que todos los campos requeridos están presentes en el formulario
-  if (!formData.idCliente || !formData.nombreCliente || !formData.telCliente || !formData.whatsCliente || !formData.emailCliente || !formData.direccionCliente || !formData.estado || !formData.equipo || !formData.falla || !formData.fechaProbEnrega || !formData.estatusOrden || !formData.anticipo || !formData.marca || !formData.modelo || !formData.numSerie || !formData.tipoReparacion || !formData.tiempoReparacion || !formData.tipoMantenimiento || !formData.costoFlete || !formData.costoDiagnostico || !formData.fkProducto) {
+  if (
+    !formData.idCliente ||
+    !formData.nombreCliente ||
+    !formData.telCliente ||
+    !formData.whatsCliente ||
+    !formData.estado ||
+    !formData.equipo ||
+    !formData.falla ||
+    !formData.estatusOrden ||
+    !formData.fkProducto
+  ) {
     return res.status(400).json({ error: "Todos los campos son obligatorios" });
   }
 
@@ -19,7 +29,45 @@ router.post("/", (req, res) => {
       return res.status(500).json({ error: "Error al guardar la orden" });
     }
 
-    // Guardar datos del cliente en la tabla 'clientes'
+    const checkEquipoQuery = "SELECT id_producto FROM productos WHERE nombre = ?";
+    connection.query(checkEquipoQuery, [formData.equipo], (error, result) => {
+      if (error) {
+        connection.rollback(() => {
+          console.error("Error al verificar el equipo:", error);
+          res.status(500).json({ error: "Error al guardar la orden" });
+        });
+      } else {
+        let fkProducto;
+
+        if (result.length === 0) {
+          // El equipo no está registrado, entonces lo agregamos a la tabla 'productos'
+          const insertProductoQuery =
+            "INSERT INTO productos (nombre, marca, modelo) VALUES (?, ?, ?)";
+          connection.query(
+            insertProductoQuery,
+            [formData.equipo, formData.marca, formData.modelo],
+            (error, result) => {
+              if (error) {
+                connection.rollback(() => {
+                  console.error("Error al insertar el nuevo equipo:", error);
+                  res.status(500).json({ error: "Error al guardar la orden" });
+                });
+              } else {
+                fkProducto = result.insertId;
+                saveOrden(fkProducto);
+              }
+            }
+          );
+        } else {
+          // El equipo ya está registrado en la tabla 'productos'
+          fkProducto = result[0].id_producto;
+          saveOrden(fkProducto);
+        }
+      }
+    });
+  });
+
+  function saveOrden(fkProducto) {
     const clienteData = {
       clave_cliente: formData.idCliente,
       nombre: formData.nombreCliente,
@@ -58,7 +106,7 @@ router.post("/", (req, res) => {
           tipo_mantenimiento: formData.tipoMantenimiento,
           costo_flete: formData.costoFlete,
           costo_diagnostico: formData.costoDiagnostico,
-          fk_producto: formData.fkProducto,
+          fk_producto: fkProducto,
         };
 
         const insertOrdenQuery = "INSERT INTO orden_cotizacion SET ?";
@@ -77,13 +125,16 @@ router.post("/", (req, res) => {
                 });
               } else {
                 console.log("Orden guardada exitosamente.");
-                res.status(200).json({ message: "Orden guardada exitosamente" });
+                res
+                  .status(200)
+                  .json({ message: "Orden guardada exitosamente" });
               }
             });
           }
         });
       }
     });
-  });
+  }
 });
+
 module.exports = router;
