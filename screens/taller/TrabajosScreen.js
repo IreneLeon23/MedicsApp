@@ -53,7 +53,7 @@ const TrabajosScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Agregar Nuevo Trabajo</Text>
+      <Text style={styles.headerTitle}>Agregar Nuevo Trabajo</Text>
 
       <View style={styles.formContainer}>
         <TextInput
@@ -117,6 +117,12 @@ const TrabajosScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+  },
+  headerTitle: {
+    fontFamily: "jakarta-medium",
+    fontSize: 20,
+    color: "#145498",
+    marginBottom: 45, // Adjusted margin
   },
   formContainer: {
     borderWidth: 1,
