@@ -14,6 +14,10 @@ const postOrdenes = require("./routes/postOrden")
 const putOrden = require("./routes/putOrden");
 const postTrabajos = require("./routes/postTrabajos")
 const getTrabajos = require("./routes/getTrabajos")
+//Admin
+const getAdminClients = require("./routes/getAdminClien")
+const getAdminUsers = require("./routes/getAdminUs")
+const postNewUsuarios = require("./routes/postNusuarios")
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -32,13 +36,15 @@ app.use("/users", getUser);
 app.use("/products", getProduct);
 app.use("/clientes", getClient)
 
-
 //Envio de formularios
 app.use("/orders", postOrdenes)
 app.use("/orders", putOrden)
 app.use("/trabajos", postTrabajos)
 
-
+//Peticiones para administrador
+app.use("/admin", getAdminClients)
+app.use("/admin", getAdminUsers)
+app.use("/admin", postNewUsuarios)
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);

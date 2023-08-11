@@ -5,14 +5,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import "react-native-gesture-handler";
-import { Provider } from 'react-redux'; // Importar Provider de react-redux
-import store from './store'; // Importar la configuración del almacenamiento Redux
+import { Provider } from "react-redux"; // Importar Provider de react-redux
+import store from "./store"; // Importar la configuración del almacenamiento Redux
 
 import LoginScreen from "./screens/LoginScreen";
 import OptionScreen from "./screens/OptionScreen";
 import ClientAdminScreen from "./screens/administrador/ClientAdminScreen";
-// import MenuAdmin from "./components/MenuAdmin";
+
 import DrawerMenuTaller from "./components/DrawerMenuTaller";
+import DrawerMenuAdmin from "./components/DrawerMenuAdmin";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -30,9 +31,7 @@ const App = () => {
       setPrivilege(data.privilege);
       setIdUsuario(data.idUsuario);
     } else {
-      console.error(
-        "No se paso un argumento"
-      );
+      console.error("No se paso un argumento");
     }
   };
 
@@ -61,7 +60,9 @@ const App = () => {
               {(props) => (
                 <LoginScreen
                   {...props}
-                  onLogin={(privilege, idUsuario) => handleLogin(privilege, idUsuario)}
+                  onLogin={(privilege, idUsuario) =>
+                    handleLogin(privilege, idUsuario)
+                  }
                   options={{ headerShown: false }}
                 />
               )}
@@ -72,12 +73,14 @@ const App = () => {
           </Stack.Navigator>
         ) : (
           <>
-            {privilege === "taller" && <DrawerMenuTaller idUsuario={idUsuario} />}
-            {privilege === "administrador" && <AdminNavigator />}
+            {privilege === "taller" && (
+              <DrawerMenuTaller idUsuario={idUsuario} />
+            )}
+            {privilege === "administrador" && <DrawerMenuAdmin />}
           </>
         )}
       </NavigationContainer>
-      </Provider>
+    </Provider>
   );
 };
 
