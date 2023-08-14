@@ -16,7 +16,9 @@ import { TextInput } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
 import * as Font from "expo-font";
 import OrdenModal from "./OrdenModal";
-import TrabajosItem from "./TrabajosItem"
+import TrabajosItem from "./TrabajosItem";
+import { useNavigation } from "@react-navigation/native";
+
 const OrdenItem = ({
   fk_orden_cotizacion,
   folio,
@@ -44,6 +46,7 @@ const OrdenItem = ({
   dificultad,
   comentario_cotizacion,
 }) => {
+  const navigation = useNavigation(); 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [trabajoInfo, setTrabajoInfo] = useState([]);
   const [iconName, setIconName] = useState("");
@@ -225,6 +228,18 @@ const OrdenItem = ({
               </Text>
             </TouchableOpacity>
           </View>
+          <View style={styles.fieldContainer}>
+            {/* Nuevo botón para abrir AltaExpedienteScreen */}
+            <TouchableOpacity
+              style={styles.fieldContainer}
+              onPress={() => {
+                navigation.navigate("Alta Expediente", { folio }); // Pasa el fk_servicio como parámetro
+              }}
+            >
+              <Ionicons name="briefcase" size={16} color="#145498" />
+              <Text style={styles.fieldTerciary}>Añadir expediente</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.fieldContainerAlt}>
             <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
@@ -232,12 +247,15 @@ const OrdenItem = ({
             </Text>
           </View>
         </Card.Content>
-        <TouchableOpacity style={styles.optionButton} onPress={() => setIsModalVisible(true)}>
-            <Ionicons name="open-outline" size={22} color="#145498" />
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionButton}
+          onPress={() => setIsModalVisible(true)}
+        >
+          <Ionicons name="open-outline" size={22} color="#145498" />
+        </TouchableOpacity>
       </Card>
       {/* Modal para editar y ver detalles de la orden */}
-   <OrdenModal
+      <OrdenModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         ordenData={{

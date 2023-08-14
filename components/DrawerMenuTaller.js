@@ -11,8 +11,9 @@ import ExpedientesScreen from "./../screens/taller/ExpedientesScreen";
 import ReportesScreen from "./../screens/taller/ReportesScreen";
 import CotizacionScreen from "./../screens/taller/CotizacionScreen";
 import AltaServicioScreen from "./../screens/taller/AltaServicioScreen";
-import TrabajosScreen from "./../screens/taller/TrabajosScreen"
+import AltaTrabajoScreen from "./../screens/taller/AltaTrabajoScreen"
 import TrabajosGenScreen from "../screens/taller/TrabajosGenScreen";
+import AltaExpedienteScreen from "../screens/taller/AltaExpedienteScreen";
 
 const CustomDrawerContent = ({ state, descriptors, navigation }) => {
   return (
@@ -70,6 +71,7 @@ const CustomDrawerContent = ({ state, descriptors, navigation }) => {
 const DrawerMenuTaller = () => {
   const Drawer = createDrawerNavigator();
   const idUsuario = useSelector((state) => state.user.idUsuario); // Acceder al idUsuario desde Redux
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -101,6 +103,12 @@ const DrawerMenuTaller = () => {
       />
       {/* Resto de las pantallas */}
       <Drawer.Screen
+        name="Alta Expediente"
+        initialParams={{idUsuario}}
+        component={AltaExpedienteScreen}
+        options={{ headerShown: false }}
+      />
+      <Drawer.Screen
         name="Alta Servicio"
         initialParams={{idUsuario}}
         component={AltaServicioScreen}
@@ -108,7 +116,7 @@ const DrawerMenuTaller = () => {
       />
       <Drawer.Screen 
        name="Alta Trabajos"
-       component={TrabajosScreen}
+       component={AltaTrabajoScreen}
        options={{ headerShown: false }}>
 
       </Drawer.Screen>

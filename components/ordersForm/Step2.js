@@ -35,6 +35,7 @@ const Step2 = ({
 
   console.log("Step2 - isNewEquipo:", isNewEquipo); // Agregar mensaje de depuración
   console.log("Step2 - equipo:", equipo); // Agregar mensaje de depuración
+  console.log("Step2 - usuario:", usuario);
   return (
     
     <FormStep>

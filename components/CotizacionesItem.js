@@ -1,60 +1,74 @@
-import React, { useState,  useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Modal,
-  Linking,
   ScrollView,
-  
 } from "react-native";
-import { Card } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { TextInput } from "react-native-paper";
-
+import { Card, TextInput } from "react-native-paper";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const CotizacionItem = ({
-folio,
-nombre_cliente,
-estatus_orden,
-fecha_captura,
-fecha_compromiso,
-comentario_cotizacion,
-equipo,
-total,
-nombre_usuario
+  folio,
+  nombre_cliente,
+  estatus_orden,
+  fecha_captura,
+  fecha_compromiso,
+  comentario_cotizacion,
+  equipo,
+  total,
+  nombre_usuario,
 }) => {
-
-  const [showDetails, setShowDetails] = useState(false); 
+  const [showDetails, setShowDetails] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
-  const [updatedNombreCliente, setUpdatedNombreCliente] = useState(nombre_cliente);
+  const [updatedNombreCliente, setUpdatedNombreCliente] = useState(
+    nombre_cliente
+  );
   const [updatedEstatusOrden, setUpdatedEstatusOrden] = useState(estatus_orden);
   const [updatedFechaCaptura, setUpdatedFechaCaptura] = useState(fecha_captura);
-  const [updatedFechaComproiso, setUpdatedFechaCompromiso] = useState(fecha_compromiso);
-  const [updatedComentarioCotizacion, setUpdatedComentarioCotizacion] = useState(comentario_cotizacion);
-  const [updatedEquipo, setUpdatedEquipo] = useState(equipo);
-  const [updatedTotal, setUpdatedTotal] = useState(total);
-  const [updatedNombreUsuario, setUpdatedNombreUsuario] = useState(nombre_usuario);
-  
- 
+  const [updatedFechaCompromiso, setUpdatedFechaCompromiso] = useState(
+    fecha_compromiso
+  );
+  const [updatedComentarioCotizacion, setUpdatedComentarioCotizacion] = useState(
+    comentario_cotizacion
+  );
 
   const toggleModal = () => {
     setShowDetails(!showDetails);
   };
+
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
 
   const handleSaveChanges = () => {
-    // ... Actualiza los valores de tus estados con los nuevos valores editados ...
+    const updatedData = {
+      estatus_orden: updatedEstatusOrden,
+      fecha_captura: updatedFechaCaptura,
+      fecha_compromiso: updatedFechaCompromiso,
+      comentario_cotizacion: updatedComentarioCotizacion,
+    };
 
-    // Finaliza el modo de edición después de guardar
-    setEditMode(false);
+    fetch(`http://192.168.1.10:8080/workshop/EditCotizacion/${folio}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data updated successfully:", data);
+        setEditMode(false);
+      })
+      .catch((error) => {
+        console.error("Error updating data:", error);
+      });
   };
-  
+
   return (
     <View style={styles.fatherContainer}>
       <Card style={styles.card}>
@@ -95,15 +109,7 @@ nombre_usuario
               <ScrollView contentContainerStyle={styles.scrollContent}>
               <Text style={styles.fieldPrimary}>Folio: {folio}</Text>
 
-                <TextInput
-              style={[styles.input, styles.leftInput]}
-              value={editMode ? updatedNombreCliente: nombre_cliente}
-              label={"Nombre de cliente"}
-              onChangeText={setUpdatedNombreCliente}
-              mode="outlined"
-              activeOutlineColor="#145498"
-              disabled={!editMode}
-            />
+
                 <TextInput
               style={[styles.input, styles.leftInput]}
               value={editMode ? updatedEstatusOrden: estatus_orden}
@@ -124,7 +130,7 @@ nombre_usuario
             />
  <TextInput
           style={[styles.input, styles.leftInput]}
-          value={editMode ? updatedFechaComproiso: fecha_compromiso}
+          value={editMode ? updatedFechaCompromiso: fecha_compromiso}
           label={"Fecha de compromiso"}
           onChangeText={setUpdatedFechaCompromiso}
           mode="outlined"
@@ -140,44 +146,16 @@ nombre_usuario
       mode="outlined"
       activeOutlineColor="#145498"
       disabled={!editMode}
-    /> 
-     <TextInput
-      style={[styles.input, styles.leftInput]}
-      value={editMode ? updatedEquipo: equipo}
-      label={"Equipo"}
-      onChangeText={setUpdatedEquipo}
-      mode="outlined"
-      activeOutlineColor="#145498"
-      disabled={!editMode}
-    /> 
-    <TextInput
-      style={[styles.input, styles.leftInput]}
-      value={editMode ? updatedTotal: total}
-      label={"Total"}
-      onChangeText={setUpdatedTotal}
-      mode="outlined"
-      activeOutlineColor="#145498"
-      disabled={!editMode}
-    /> 
-    <TextInput
-      style={[styles.input, styles.leftInput]}
-      value={editMode ? updatedNombreUsuario: nombre_usuario}
-      label={"Usuario"}
-      onChangeText={setUpdatedNombreUsuario}
-      mode="outlined"
-      activeOutlineColor="#145498"
-      disabled={!editMode}
-    /> 
-            
+    />            
                 <TouchableOpacity
-            style={editMode ? styles.saveButton : styles.editButton} // Cambia el estilo si está en modo de edición
-            onPress={() => setEditMode(!editMode)} // Cambia el estado de editMode
+            style={editMode ? styles.saveButton : styles.editButton} 
+            onPress={() => setEditMode(!editMode)} 
           >
             <Text style={styles.ButtonText}>
               {editMode ? "Cancelar" : "Editar"}
             </Text>
           </TouchableOpacity>
-          {editMode && ( // Muestra el botón "Guardar Cambios" solo en modo de edición
+          {editMode && ( 
             <TouchableOpacity
               style={styles.saveButton}
               onPress={handleSaveChanges}
@@ -189,8 +167,8 @@ nombre_usuario
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => {
-                    toggleEditMode(); // Sal del modo de edición si se cierra el modal
-                    toggleModal(); // Cierra el modal
+                    toggleEditMode(); 
+                    toggleModal(); 
                   }}
                 >
                   <Text style={styles.ButtonText}>Cerrar</Text>
@@ -286,7 +264,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
   },
-   // Estilos para el botón "Editar"
+ 
    editButton: {
     marginTop: 20,
     alignSelf: "center",
@@ -295,16 +273,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#145498",
     borderRadius: 5,
   },
-  // Estilos para el botón "Guardar cambios"
+
   saveButton: {
     marginTop: 20,
     alignSelf: "center",
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: "green", // Personaliza el color para "Guardar Cambios"
+    backgroundColor: "green",
     borderRadius: 5,
   },
-  // Estilos para el botón "Cerrar"
+
   closeButton: {
     position: "absolute",
     top: 5,

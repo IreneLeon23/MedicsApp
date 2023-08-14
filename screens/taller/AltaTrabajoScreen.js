@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Button, ScrollView, StyleSheet
 import TrabajosItem from '../../components/TrabajosItem';
 import axios from 'axios'; // Importar Axios
 
-const TrabajosScreen = () => {
+const AltaTrabajoScreen = () => {
   const [fk_orden_cotizacion, setFkOrdenCotizacion] = useState('');
   const [nombre_trabajo, setNombreTrabajo] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -167,4 +167,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default TrabajosScreen;
+export default AltaTrabajoScreen;

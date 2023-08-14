@@ -20,6 +20,7 @@ const getAdminUsers = require("./routes/getAdminUs")
 const postNewUsuarios = require("./routes/postNusuarios")
 const putClient = require("./routes/putClient")
 const putUser = require("./routes/putUser")
+const postExpedientes = require("./routes/postExpedientes"); 
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -30,6 +31,7 @@ app.use("/auth", authRoutes);
 //Obtener datos para tablas de taller
 app.use("/workshop", getOrdenes);
 app.use("/workshop", getExpedientes);
+app.use("/workshop", postExpedientes);
 app.use("/workshop",getCotizacion);
 app.use("/workshop",getReportes);
 app.use("/workshop",getTrabajos)

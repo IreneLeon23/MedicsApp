@@ -18,16 +18,18 @@ registerTranslation("en-GB", enGB);
 import axios from "axios";
 
 const AltaServicioScreen = ({ navigation, route }) => {
-  const [usuario, setUsuario] = useState("");
+
   useEffect(() => {
     // Obtener el valor de idUsuario de route.params
     const { idUsuario } = route.params;
+    console.log("Valor de idUsuario obtenido:", idUsuario);
     // Actualizar el estado usuario con el valor de idUsuario
     setUsuario(idUsuario);
   }, []);
 
   // Estados para cada paso del formulario
   //Step1
+
   const [folio, setFolio] = useState("");
   const [idCliente, setIdCliente] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
@@ -36,6 +38,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
   const [whatsCliente, setWhatsCliente] = useState("");
   const [emailCliente, setEmailCliente] = useState("");
   //Step2
+  const [usuario, setUsuario] = useState("");
   const [showDropDown, setShowDropDown] = useState(false);
   const [estadoEquipo, setEstado] = useState("");
   const [falla, setFalla] = useState("");

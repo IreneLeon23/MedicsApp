@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from "react-native";
 import { Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Font from "expo-font";
-
 
 const ExpedienteItem = ({
   id_expediente,
@@ -12,10 +18,11 @@ const ExpedienteItem = ({
   descripcion_equipo,
   nombre_usuario,
   nombre_cliente,
+  telefono_cliente,
+  whatsapp_cliente,
+  direccion_cliente,
   fecha_entrada,
-  fk_servicio,
   fecha_entrega,
-  direccion,
   foto_equipo,
   tiempo_taller,
   costo_reparacion,
@@ -28,8 +35,12 @@ const ExpedienteItem = ({
   sugerencias,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const formattedFechaEntrada = new Date(fecha_entrada).toLocaleDateString("es-ES");
-  const formattedFechaEntrega = new Date(fecha_entrega).toLocaleDateString("es-ES");
+  const formattedFechaEntrada = new Date(fecha_entrada).toLocaleDateString(
+    "es-ES"
+  );
+  const formattedFechaEntrega = new Date(fecha_entrega).toLocaleDateString(
+    "es-ES"
+  );
 
   return (
     <View style={styles.fatherContainer}>
@@ -43,9 +54,17 @@ const ExpedienteItem = ({
 
           <View style={styles.fieldContainer}>
             <Text style={styles.fieldSecondary}>{formattedFechaEntrada}</Text>
-            <MaterialCommunityIcons name="calendar-import" size={16} color="#777" />
+            <MaterialCommunityIcons
+              name="calendar-import"
+              size={16}
+              color="#777"
+            />
             <Text style={styles.fieldSecondary}>{formattedFechaEntrega}</Text>
-            <MaterialCommunityIcons name="calendar-export" size={16} color="#777" />
+            <MaterialCommunityIcons
+              name="calendar-export"
+              size={16}
+              color="#777"
+            />
           </View>
 
           <View style={styles.fieldContainer}>
@@ -80,9 +99,52 @@ const ExpedienteItem = ({
           >
             <View style={styles.modalContainer}>
               <ScrollView contentContainerStyle={styles.scrollContent}>
-                <Text style={styles.fieldPrimary}>ID Expediente: {id_expediente}</Text>
-                <Text style={styles.fieldTerciaryAlt}>Descripción del equipo: {descripcion_equipo}</Text>
-                {/* ... other fields ... */}
+                <Text style={styles.fieldPrimary}>
+                  ID Expediente: {id_expediente}
+                </Text>
+                <Text style={styles.fieldTerciaryAlt}>
+                  Descripción del equipo: {descripcion_equipo}
+                </Text>
+                <View style={styles.fieldContainer}>
+                  <MaterialCommunityIcons
+                    name="account-circle"
+                    size={20}
+                    color="#145498"
+                  />
+                   <Text style={styles.fieldTerciaryAlt}>Nombre usuario{nombre_usuario}</Text>
+                  <Text style={styles.fieldTerciaryAlt}>{nombre_cliente}</Text>
+                  <Text style={styles.fieldSecondary}>{telefono_cliente}</Text>
+                </View>
+                <View style={styles.fieldContainer}>
+                  <MaterialCommunityIcons
+                    name="whatsapp"
+                    size={20}
+                    color="#145498"
+                  />
+                  <Text style={styles.fieldTerciaryAlt}>
+                    {whatsapp_cliente}
+                  </Text>
+                </View>
+                <View style={styles.fieldContainer}>
+                  <MaterialCommunityIcons
+                    name="map-marker"
+                    size={20}
+                    color="#145498"
+                  />
+                  <Text style={styles.fieldTerciaryAlt}>
+                    {direccion_cliente}
+                  </Text>
+                </View>
+                <View style={styles.fieldContainer}>
+                  <MaterialCommunityIcons
+                    name="map-marker"
+                    size={20}
+                    color="#145498"
+                  />
+                  <Text style={styles.fieldTerciaryAlt}>
+                    {estado_equipo}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={styles.closeButton}
                   onPress={() => setShowDetails(false)}
