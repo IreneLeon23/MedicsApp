@@ -3,7 +3,7 @@ const router = express.Router();
 const connection = require("../connection");
 
 // Ruta para obtener todos los campos de la tabla trabajos
-router.get("/adminclien", (req, res) => {
+router.get("/clients", (req, res) => {
   // Realizar la consulta SQL para obtener los campos de la tabla trabajos
   const sql = `
     SELECT clave_cliente, nombre, telefono, whatsapp, correo, direccion

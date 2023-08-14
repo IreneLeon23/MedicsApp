@@ -24,7 +24,7 @@ const ExpedientesScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.14:8080/workshop/expedientes`)
+      .get(`http://192.168.1.10:8080/workshop/expedientes`)
       .then((response) => {
         setExpedientes(response.data);
       })
@@ -146,7 +146,7 @@ const ExpedientesScreen = () => {
         keyExtractor={(item) => item.id_expediente.toString()}
         renderItem={renderExpedienteItem}
       />
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Toast/>
     </View>
   );
 };

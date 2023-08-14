@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
-  FlatList,
-  StyleSheet,
   TextInput,
   TouchableOpacity,
+  FlatList,
+  StyleSheet,
 } from "react-native";
 import axios from "axios";
-import AdminClienItem from "../../components/AdminClienItem";
-import { DB_HOST } from "@env";
 import { Ionicons } from "@expo/vector-icons";
+import ClientItem from "../../components/ClientItem";
 import Toast from "react-native-toast-message";
 
-const ClientAdminScreen = () => {
+const ClientScreen = () => {
   const [clientes, setClientes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [orderBy, setOrderBy] = useState(null);
+  const [shouldReloadData, setShouldReloadData] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = () => {
+  const fetchData = (reload = false) => {
     axios
-      .get(`http://192.168.1.14:8080/admin/adminclien`)
+      .get(`http://192.168.1.10:8080/admin/clients`)
       .then((response) => {
         setClientes(response.data);
       })
@@ -33,8 +28,15 @@ const ClientAdminScreen = () => {
       });
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const renderClientes = ({ item }) => {
-    return <AdminClienItem {...item} />;
+    if (!item) {
+      return null; // Evitar renderizar si el objeto es undefined o nulo
+    }
+    return <ClientItem {...item} />;
   };
 
   const handleFilterChange = (text) => {
@@ -97,7 +99,7 @@ const ClientAdminScreen = () => {
 
         return (
           item.clave_cliente.toString().includes(searchTerm) ||
-          item.nombre.includes(searchTerm) 
+          item.nombre.includes(searchTerm)
         );
       });
 
@@ -129,7 +131,7 @@ const ClientAdminScreen = () => {
         keyExtractor={(item) => item.clave_cliente}
         renderItem={renderClientes}
       />
-      <Toast  />
+      <Toast />
     </View>
   );
 };
@@ -169,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ClientAdminScreen;
+export default ClientScreen;

@@ -5,7 +5,7 @@ const connection = require("../connection");
 
 router.get("/cotizacion", (req, res) => {
     const sql=
-    'SELECT oc.folio, (SELECT c.nombre FROM clientes AS c WHERE c.clave_cliente = oc.fk_cliente) AS nombre_cliente, MAX(oc.estatus_orden) AS estatus_orden, MAX(oc.fecha_captura) AS fecha_captura, MAX(oc.fecha_compromiso) AS fecha_compromiso, MAX(oc.comentario_cotizacion) AS comentario_cotizacion, MAX(oc.equipo) AS equipo, (SELECT u.nombre FROM usuarios AS u WHERE u.clave_usuario = oc.fk_usuario) AS nombre_usuario FROM orden_cotizacion AS oc GROUP BY oc.folio;'; 
+    'SELECT oc.folio, (SELECT c.nombre FROM clientes AS c WHERE c.clave_cliente = oc.fk_cliente) AS nombre_cliente, MAX(oc.estado) AS estado, MAX(oc.fecha_captura) AS fecha_captura, MAX(oc.fecha_compromiso) AS fecha_compromiso, MAX(oc.comentario_cotizacion) AS comentario_cotizacion, MAX(oc.equipo) AS equipo, (SELECT u.nombre FROM usuarios AS u WHERE u.clave_usuario = oc.fk_usuario) AS nombre_usuario FROM orden_cotizacion AS oc GROUP BY oc.folio;'; 
     
     
 

@@ -6,7 +6,7 @@ import {
 } from "@react-navigation/drawer";
 import { useSelector } from 'react-redux';
 import { Ionicons } from "@expo/vector-icons";
-import ClientAdminScreen from "./../screens/administrador/ClientAdminScreen";
+import ClientScreen from "./../screens/administrador/ClientScreen";
 import NuevoUsuario from "./../screens/administrador/NuevoUsuario"
 import UsuariosScreen from './../screens/administrador/UsuariosScreen'
 
@@ -73,7 +73,7 @@ const DrawerMenuTaller = () => {
     >
       <Drawer.Screen
         name="Clientes"
-        component={ClientAdminScreen}
+        component={ClientScreen}
         options={{ headerShown: false }}
       />
       <Drawer.Screen

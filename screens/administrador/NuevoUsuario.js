@@ -26,7 +26,7 @@ const NuevoUsuario = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.1.14:8080/admin/ultimoClaveUsuario")
+      .get("http://192.168.1.10:8080/admin/ultimoClaveUsuario")
       .then((response) => {
         const ultimoClave = parseInt(response.data.ultimoClaveUsuario, 10);
         const newClaveUsuario = ultimoClave + 1;
@@ -34,7 +34,10 @@ const NuevoUsuario = () => {
         setClaveUsuario(newClaveUsuario.toString());
       })
       .catch((error) => {
-        console.error("Error al obtener el último valor de clave_usuario:", error);
+        console.error(
+          "Error al obtener el último valor de clave_usuario:",
+          error
+        );
       });
   }, []);
 
@@ -46,12 +49,12 @@ const NuevoUsuario = () => {
       correo: correo,
       password: password,
       estatus: estatus,
-      descripcion: descripcion 
+      descripcion: descripcion,
     };
 
     try {
       const response = await axios.post(
-        "http://192.168.1.14:8080/admin/newUser",
+        "http://192.168.1.10:8080/admin/newUser",
         nuevoUsuario,
         {
           headers: {
@@ -59,7 +62,7 @@ const NuevoUsuario = () => {
           },
         }
       );
-    
+
       if (response.status === 200) {
         setClaveUsuario("");
         setNombre("");
@@ -68,7 +71,7 @@ const NuevoUsuario = () => {
         setPassword("");
         setEstatus("");
         setDescripcion("");
-    
+
         setUsuarios([...usuarios, nuevoUsuario]); // Movido aquí
       } else {
         console.error("Error al agregar al usuario:", response.statusText);
@@ -99,6 +102,7 @@ const NuevoUsuario = () => {
           {/* Dropdown para el campo privilegio */}
           <DropDown
             label={"Privilegio"}
+            placeholder="Seleccione el rol del usuario"
             mode={"outlined"}
             visible={showDropDown}
             showDropDown={() => setShowDropDown(true)}
@@ -109,7 +113,18 @@ const NuevoUsuario = () => {
               { label: "Taller", value: "taller" },
               { label: "Administrador", value: "administrador" },
             ]}
+            theme={{
+              colors: {
+                primary: "#145498", // Cambia el color principal según tus preferencias
+                background: "#FFFFFF", // Cambia el color de fondo según tus preferencias
+                surface: "#FFFFFF", // Cambia el color de la superficie según tus preferencias
+              },
+            }}
+            style={styles.dropDownStyle} // Agrega un estilo personalizado al componente DropDown
+            dropDownItemStyle={styles.dropDownItemStyle} // Agrega un estilo personalizado a los elementos de la lista desplegable
+            dropDownItemTextStyle={styles.dropDownItemTextStyle} // Agrega un estilo personalizado al texto de los elementos de la lista desplegable
           />
+
           <TextInput
             style={styles.input}
             placeholder="Correo"
@@ -151,19 +166,21 @@ const NuevoUsuario = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    backgroundColor: "#fff", // Cambia el color de fondo según tus preferencias
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   formContainer: {
-    borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
-    padding: 20,
+    padding: 1,
     marginBottom: 20,
+    backgroundColor: "#fff", // Cambia el color de fondo según tus preferencias
   },
   header: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 50,
   },
   label: {
     fontSize: 16,
@@ -173,26 +190,35 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderRadius: 8,
-    borderColor: "#ccc",
+    borderColor: "#CCCCCC", // Cambia el color del borde según tus preferencias
     borderWidth: 1,
-    marginBottom: 8,
-    paddingHorizontal: 8,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF", // Cambia el color de fondo según tus preferencias
   },
   cardContainer: {
     marginTop: 20,
   },
   Button: {
-    marginTop: 20,
     alignSelf: "center",
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     backgroundColor: "#145498",
     borderRadius: 5,
+    elevation: 2,
+    marginBottom: 20,
   },
   ButtonText: {
     fontFamily: "jakarta-semi-bold",
     fontSize: 16,
-    color: "#fff",
+    color: "#FFFFFF",
+  },
+  dropDownStyle: {
+    marginBottom: 10, // Ajusta el margen inferior según tus necesidades
+    backgroundColor: "#FFFFFF", // Cambia el color de fondo según tus preferencias
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
   },
 });
 

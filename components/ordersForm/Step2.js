@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useEffect} from "react";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
@@ -22,8 +22,21 @@ const Step2 = ({
   tiempoReparacionList,
   setfechaCompromiso,
   setFechaCaptura,
+  setIsNewEquipo, // Agrega esta prop
 }) => {
+  useEffect(() => {
+    // Si el valor de equipo es "nuevo", actualiza isNewEquipo a true
+    if (equipo === "nuevo") {
+      setIsNewEquipo(true);
+    } else {
+      setIsNewEquipo(false);
+    }
+  }, [equipo, setIsNewEquipo]);
+
+  console.log("Step2 - isNewEquipo:", isNewEquipo); // Agregar mensaje de depuración
+  console.log("Step2 - equipo:", equipo); // Agregar mensaje de depuración
   return (
+    
     <FormStep>
             {/* Mostrar el idUsuario en un TextInput */}
             <TextInput

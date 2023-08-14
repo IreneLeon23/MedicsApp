@@ -18,6 +18,8 @@ const getTrabajos = require("./routes/getTrabajos")
 const getAdminClients = require("./routes/getAdminClien")
 const getAdminUsers = require("./routes/getAdminUs")
 const postNewUsuarios = require("./routes/postNusuarios")
+const putClient = require("./routes/putClient")
+const putUser = require("./routes/putUser")
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -45,6 +47,8 @@ app.use("/trabajos", postTrabajos)
 app.use("/admin", getAdminClients)
 app.use("/admin", getAdminUsers)
 app.use("/admin", postNewUsuarios)
+app.use("/admin", putClient)
+app.use("/admin", putUser)
 
 app.listen(port, () => {
   console.log(`HelloNode app listening on port ${port}!`);

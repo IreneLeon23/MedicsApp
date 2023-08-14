@@ -39,7 +39,7 @@ const LoginScreen = ({ onLogin }) => {
     loadFonts();
   }, []);const handleLogin = () => {
     axios
-      .post(`http://192.168.1.14:8080/auth/login`, { email, password })
+      .post(`http://192.168.1.10:8080/auth/login`, { email, password })
       .then((response) => {
         const { privilege, idUsuario } = response.data;
         if (privilege && idUsuario) {
@@ -108,9 +108,7 @@ const LoginScreen = ({ onLogin }) => {
         </View>
       </View>
       {/* End input fields */}
-      <TouchableOpacity style={styles.forgotPasswordButton}>
-        <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-      </TouchableOpacity>
+    
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Iniciar sesión</Text>
       </TouchableOpacity>

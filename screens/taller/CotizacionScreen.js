@@ -24,7 +24,7 @@ const CotizacionScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.14:8080/workshop/cotizacion`)
+      .get(`http://192.168.1.10:8080/workshop/cotizacion`)
       .then((response) => {
         setCotizacion(response.data);
       })
@@ -130,7 +130,7 @@ const CotizacionScreen = () => {
         keyExtractor={(item) => item.folio}
         renderItem={renderCotizacion}
       />
-      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Toast />
     </View>
   );
 };

@@ -21,7 +21,7 @@ class TrabajosGenScreen extends Component {
 
   fetchData = () => {
     axios
-      .get(`http://192.168.1.14:8080/workshop/trabajos`)
+      .get(`http://192.168.1.10:8080/workshop/trabajos`)
       .then((response) => {
         const trabajos = response.data;
         if (trabajos.length > 0) {

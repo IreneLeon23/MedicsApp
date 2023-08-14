@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
-import AdminUsItem from "../../components/AdminUsItem";
+import UserItem from "../../components/UserItem";
 import { DB_HOST } from "@env";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
@@ -24,28 +24,28 @@ const UsuariosScreen = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.14:8080/admin/adminus`);
+      const response = await axios.get(`http://192.168.1.10:8080/admin/adminus`);
       setUsuarios(response.data);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
+  // useEffect(() => {
+  //   fetchData();
 
-    // Configura el intervalo para realizar el polling cada 5 segundos
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 30000); // Cambia el intervalo según tus necesidades
+  //   // // Configura el intervalo para realizar el polling cada 5 segundos
+  //   // const intervalId = setInterval(() => {
+  //   //   fetchData();
+  //   // }, 30000); // Cambia el intervalo según tus necesidades
 
-    return () => {
-      clearInterval(intervalId); // Limpia el intervalo al desmontar el componente
-    };
-  }, []);
+  //   // return () => {
+  //   //   clearInterval(intervalId); // Limpia el intervalo al desmontar el componente
+  //   // };
+  // }, []);
 
   const renderUsuarios = ({ item }) => {
-    return <AdminUsItem {...item} />;
+    return <UserItem {...item} />;
   };
 
   const handleFilterChange = (text) => {
@@ -139,7 +139,7 @@ const UsuariosScreen = () => {
         data={usuarios}
         keyExtractor={(item) => item.clave_usuario}
         renderItem={({item}) => (
-          <AdminUsItem {...item} fetchData={fetchData} />
+          <UserItem {...item} fetchData={fetchData} />
         )}
       />
       <Toast />

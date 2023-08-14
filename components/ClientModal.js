@@ -1,95 +1,124 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, Modal, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  ScrollView,
+  Modal,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { TextInput } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
-import { enGB, registerTranslation } from "react-native-paper-dates";
-registerTranslation("en-GB", enGB);
-import axios from "axios"; // Importa axios si no lo has hecho ya
-import TrabajosItem from "./TrabajosItem"; // Asegúrate de proporcionar la ruta correcta
+import axios from "axios"; // Asegúrate de importar axios aquí si no lo has hecho ya
 
-const OrdenModal = ({ visible, onClose, ordenData }) => {
+const ClientModal = ({
+  visible,
+  onClose,
+  clientData,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [updatedOrdenData, setUpdatedOrdenData] = useState({ ...ordenData });
-  const [trabajoInfo, setTrabajoInfo] = useState([]);
-  const [showTipoMantenimientoDropDown, setShowTipoMantenimientoDropDown] =
-    useState(false);
+  const [updatedClientData, setUpdatedClientData] = useState({ ...clientData });
 
+  useEffect(() => {
+    // Actualiza el estado de updatedClientData cuando cambia la prop clientData
+    setUpdatedClientData({ ...clientData });
+  }, [clientData]);
 
   const handleSaveChanges = () => {
-    console.log("Valor de updatedOrdenData.folio:", updatedOrdenData.folio); // Agregar este console.log
-    // Realizar una petición PUT para actualizar la orden
+    console.log(
+      "Valor de updatedClientData.clave_cliente:",
+      updatedClientData.clave_cliente
+    );
     axios
       .put(
-        `http://192.168.1.10:8080/orders/update/${updatedOrdenData.folio}`,
-        updatedOrdenData
+        `http://192.168.1.10:8080/admin/update/${updatedClientData.clave_cliente}`,
+        updatedClientData
       )
       .then((response) => {
-        console.log("Orden actualizada exitosamente:", response.data);
-        // Actualizar los datos de la orden en la interfaz, si es necesario
-        // Puedes realizar una nueva petición para obtener los datos actualizados si lo deseas
+        console.log("Cliente editado exitosamente:", response.data);
       })
       .catch((error) => {
-        console.error("Error al actualizar la orden:", error);
+        console.error("Error al actualizar el cliente:", error);
       });
   };
-  useEffect(() => {
-    // Resto del código de useEffect para cargar información de trabajos
-  }, [ordenData.folio]);
-
-  useEffect(() => {
-    // Cargar información de trabajos al montar el componente
-    axios
-      .get(
-        `http://192.168.1.10:8080/workshop/trabajos?fk_orden_cotizacion=${ordenData.folio}`
-      )
-      .then((response) => {
-        setTrabajoInfo(response.data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener la información del trabajo:", error);
-      });
-  }, [ordenData.folio]);
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
       <PaperProvider>
         <View style={styles.modalContainer}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
-            {/* Mostrar el campo "Folio" */}
             <View style={styles.inputsContainer}>
-               {/* Editar campos directamente en el formulario */}
-               <TextInput
-                style={styles.input}
-                label="Nombre del Producto"
-                value={updatedOrdenData.nombre_producto}
-                onChangeText={(text) =>
-                  setUpdatedOrdenData((prevData) => ({
-                    ...prevData,
-                    nombre_producto: text,
-                  }))
-                }
-                mode="outlined"
-                activeOutlineColor="#145498"
-                editable={isEditing} // Habilitar edición si isEditing es true
-              />
-
+              {/* Editar campos directamente en el formulario */}
               <TextInput
                 style={styles.input}
-                label="Nombre del Cliente"
-                value={updatedOrdenData.nombre_cliente}
+                label="Nombre"
+                value={updatedClientData.nombre}
                 onChangeText={(text) =>
-                  setUpdatedOrdenData((prevData) => ({
+                  setUpdatedClientData((prevData) => ({
                     ...prevData,
-                    nombre_cliente: text,
+                    nombre: text,
                   }))
                 }
                 mode="outlined"
                 activeOutlineColor="#145498"
                 editable={isEditing} // Habilitar edición si isEditing es true
               />
-
-              {/* Agregar más campos aquí... */}
-
+              <TextInput
+                style={styles.input}
+                label="Telefono"
+                value={updatedClientData.telefono}
+                onChangeText={(text) =>
+                  setUpdatedClientData((prevData) => ({
+                    ...prevData,
+                    telefono: text,
+                  }))
+                }
+                mode="outlined"
+                activeOutlineColor="#145498"
+                editable={isEditing} // Habilitar edición si isEditing es true
+              />
+              <TextInput
+                style={styles.input}
+                label="Whatsapp"
+                value={updatedClientData.whatsapp}
+                onChangeText={(text) =>
+                  setUpdatedClientData((prevData) => ({
+                    ...prevData,
+                    whatsapp: text,
+                  }))
+                }
+                mode="outlined"
+                activeOutlineColor="#145498"
+                editable={isEditing} // Habilitar edición si isEditing es true
+              />
+              <TextInput
+                style={styles.input}
+                label="Correo"
+                value={updatedClientData.correo}
+                onChangeText={(text) =>
+                  setUpdatedClientData((prevData) => ({
+                    ...prevData,
+                    correo: text,
+                  }))
+                }
+                mode="outlined"
+                activeOutlineColor="#145498"
+                editable={isEditing} // Habilitar edición si isEditing es true
+              />
+              <TextInput
+                style={styles.input}
+                label="Direccion"
+                value={updatedClientData.direccion}
+                onChangeText={(text) =>
+                  setUpdatedClientData((prevData) => ({
+                    ...prevData,
+                    direccion: text,
+                  }))
+                }
+                mode="outlined"
+                activeOutlineColor="#145498"
+                editable={isEditing} // Habilitar edición si isEditing es true
+              />
             </View>
             {/* Botones */}
             <View style={styles.buttonsContainer}>
@@ -113,7 +142,7 @@ const OrdenModal = ({ visible, onClose, ordenData }) => {
                   <TouchableOpacity
                     style={styles.cancelButton}
                     onPress={() => {
-                      setUpdatedOrdenData({ ...ordenData });
+                      setUpdatedClientData({ ...clientData });
                       setIsEditing(false);
                     }}
                   >
@@ -122,28 +151,6 @@ const OrdenModal = ({ visible, onClose, ordenData }) => {
                 </>
               )}
             </View>
-
-
-            {/* Mostrar trabajos relacionados */}
-            <View style={styles.trabajosContainer}>
-              <Text style={styles.trabajosTitle}>Trabajos Relacionados:</Text>
-              {trabajoInfo.map((trabajo) => (
-                <TrabajosItem
-                  key={trabajo.id_trabajo}
-                  trabajo={{
-                    id_trabajo: trabajo.id_trabajo,
-                    fk_orden_cotizacion: trabajo.fk_orden_cotizacion,
-                    nombre_trabajo: trabajo.nombre_trabajo,
-                    descripcion: trabajo.descripcion,
-                    horas_trabajo: trabajo.horas_trabajo,
-                    importe: trabajo.importe,
-                    dificultad: trabajo.dificultad,
-                    costo_material: trabajo.costo_material,
-                  }}
-                />
-              ))}
-            </View>
-
             {/* Botón de "Cerrar" */}
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <Text style={styles.ButtonText}>Cerrar</Text>
@@ -155,7 +162,7 @@ const OrdenModal = ({ visible, onClose, ordenData }) => {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     backgroundColor: "#fff",
@@ -229,6 +236,7 @@ const styles = {
     justifyContent: "space-between", // Espacio uniforme entre los botones
     marginTop: 20,
   },
-};
+});
 
-export default OrdenModal;
+export default ClientModal; // Asegúrate de que el nombre coincida
+

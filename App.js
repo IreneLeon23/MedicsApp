@@ -10,7 +10,7 @@ import store from "./store"; // Importar la configuración del almacenamiento Re
 
 import LoginScreen from "./screens/LoginScreen";
 import OptionScreen from "./screens/OptionScreen";
-import ClientAdminScreen from "./screens/administrador/ClientAdminScreen";
+import ClientScreen from "./screens/administrador/ClientScreen";
 
 import DrawerMenuTaller from "./components/DrawerMenuTaller";
 import DrawerMenuAdmin from "./components/DrawerMenuAdmin";
@@ -34,17 +34,6 @@ const App = () => {
       console.error("No se paso un argumento");
     }
   };
-
-  const AdminNavigator = () => (
-    <Tab.Navigator tabBar={(props) => <MenuAdmin {...props} />}>
-      <Tab.Screen
-        name="Administrar"
-        component={ClientAdminScreen}
-        options={{ headerShown: false }}
-      />
-      {/* Resto de las pantallas */}
-    </Tab.Navigator>
-  );
 
   return (
     <Provider store={store}>
