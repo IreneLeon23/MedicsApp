@@ -29,7 +29,7 @@ const CotizacionScreen = () => {
         setCotizacion(response.data);
       })
       .catch((error) => {
-        console.error("Error al obtener los trabajos:", error);
+        console.error("Error al obtener las cotizaciones:", error);
       });
   };
 

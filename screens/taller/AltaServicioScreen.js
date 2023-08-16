@@ -221,7 +221,7 @@ const AltaServicioScreen = ({ navigation, route }) => {
     };
     // Realizar la solicitud POST al backend para guardar los datos
     axios
-      .post(`http://192.168.1.15:8080/orders`, formData)
+      .post(`http://192.168.1.10:8080/orders/NewOrden`, formData)
       .then((response) => {
         console.log("Respuesta del servidor:", response.data);
         // Puedes realizar alguna acción adicional aquí, como mostrar un mensaje de éxito, redirigir a otra pantalla, etc.

@@ -81,7 +81,6 @@ const ClientItem = ({
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         clientData={{
-          // Cambia ordenData a clienteData
           clave_cliente,
           nombre,
           telefono,

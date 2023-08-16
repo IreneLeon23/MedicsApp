@@ -8,7 +8,6 @@ const getReportes = require("./routes/getReportes");
 const getCotizacion = require("./routes/getCotizacion");
 const getUser = require("./routes/getUser");
 const getProduct = require("./routes/getProduct");
-const getExpedientes = require("./routes/getExpedientes");
 const getClient = require("./routes/getClient")
 const postOrdenes = require("./routes/postOrden")
 const putOrden = require("./routes/putOrden");
@@ -20,7 +19,7 @@ const getAdminUsers = require("./routes/getAdminUs")
 const postNewUsuarios = require("./routes/postNusuarios")
 const putClient = require("./routes/putClient")
 const putUser = require("./routes/putUser")
-const postExpedientes = require("./routes/postExpedientes"); 
+const Expedientes = require("./routes/Expedientes"); 
 app.use(bodyParser.json());
 
 app.get("/", function (req, res) {
@@ -29,9 +28,8 @@ app.get("/", function (req, res) {
 
 app.use("/auth", authRoutes);
 //Obtener datos para tablas de taller
+app.use("/expedientes", Expedientes);
 app.use("/workshop", getOrdenes);
-app.use("/workshop", getExpedientes);
-app.use("/workshop", postExpedientes);
 app.use("/workshop",getCotizacion);
 app.use("/workshop",getReportes);
 app.use("/workshop",getTrabajos)

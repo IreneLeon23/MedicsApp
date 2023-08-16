@@ -43,7 +43,7 @@ const AltaExpedienteScreen = ({ route }) => {
       };
 
       const response = await axios.post(
-        "http://192.168.1.10:8080/workshop/NewExpediente",
+        "http://192.168.1.10:8080/expedientes/NewExpediente",
         newExpediente
       );
 

@@ -9,7 +9,7 @@ router.put("/updateUser/:clave_usuario", (req, res) => {
     const updateQuery = "UPDATE usuarios SET ? WHERE clave_usuario = ?";
     connection.query(updateQuery, [updatedData, clave_usuario], (error, result) => {
       if (error) {
-        console.error("Error al actualizar al cliente", error);
+        console.error("Error al actualizar al usuario", error);
         res.status(500).json({ error: "Error al actualizar al usuario" });
       } else {
         console.log("Cliente actualizada exitosamente.");

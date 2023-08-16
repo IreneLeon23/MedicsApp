@@ -4,23 +4,9 @@ const router = express.Router();
 const connection = require("../connection");
 
 // Ruta para guardar una nueva orden en las tablas 'clientes' y 'orden_cotizacion'
-router.post("/", (req, res) => {
+router.post("/NewOrden", (req, res) => {
   const formData = req.body;
 
-  // Verificar que todos los campos requeridos están presentes en el formulario
-  if (
-    !formData.idCliente ||
-    !formData.nombreCliente ||
-    !formData.telCliente ||
-    !formData.whatsCliente ||
-    !formData.estado ||
-    !formData.equipo ||
-    !formData.falla ||
-    !formData.estatusOrden ||
-    !formData.fkProducto
-  ) {
-    return res.status(400).json({ error: "Todos los campos son obligatorios" });
-  }
 
   // Iniciar una transacción para asegurar que los datos se inserten en ambas tablas o ninguna
   connection.beginTransaction((error) => {

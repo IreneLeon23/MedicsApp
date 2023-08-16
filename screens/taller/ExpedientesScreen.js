@@ -18,13 +18,9 @@ const ExpedientesScreen = () => {
   const [filtro, setFiltro] = useState("");
   const [orderBy, setOrderBy] = useState(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.10:8080/workshop/expedientes`)
+      .get(`http://192.168.1.10:8080/expedientes/getExpedientes`)
       .then((response) => {
         setExpedientes(response.data);
       })
@@ -33,7 +29,14 @@ const ExpedientesScreen = () => {
       });
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const renderExpedienteItem = ({ item }) => {
+    if (!item) {
+      return null; 
+    }
     return <ExpedienteItem {...item} />;
   };
 

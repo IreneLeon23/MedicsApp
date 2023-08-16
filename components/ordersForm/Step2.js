@@ -42,7 +42,7 @@ const Step2 = ({
             {/* Mostrar el idUsuario en un TextInput */}
             <TextInput
               style={styles.input}
-              value={usuario} // Usar el valor del usuario aquí
+              value={usuario.toString()} // Usar el valor del usuario aquí
               label={"Usuario"}
               mode="outlined"
               activeOutlineColor="#145498"

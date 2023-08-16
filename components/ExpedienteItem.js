@@ -11,30 +11,33 @@ import { Card } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Font from "expo-font";
+import ExpedienteModal from "./ExpedienteModal";
 
 const ExpedienteItem = ({
   id_expediente,
   folio,
   descripcion_equipo,
-  nombre_usuario,
+  // nombre_usuario,
   nombre_cliente,
-  telefono_cliente,
-  whatsapp_cliente,
-  direccion_cliente,
+  // telefono_cliente,
+  // whatsapp_cliente,
+  // direccion_cliente,
   fecha_entrada,
   fecha_entrega,
-  foto_equipo,
+  // foto_equipo,
   tiempo_taller,
   costo_reparacion,
   tiempo_proximo_servicio,
-  estado_equipo,
+  // estado_equipo,
   notas_cliente,
   comentarios_internos,
   razon_reparacion,
   observaciones,
   sugerencias,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+
   const formattedFechaEntrada = new Date(fecha_entrada).toLocaleDateString(
     "es-ES"
   );
@@ -79,7 +82,6 @@ const ExpedienteItem = ({
           </View>
 
           <View style={styles.fieldContainerAlt}>
-            {/* <Ionicons name="chatbubble-outline" size={24} color="#145498" /> */}
             <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
               {nombre_cliente}
             </Text>
@@ -87,77 +89,31 @@ const ExpedienteItem = ({
         </Card.Content>
         <View style={styles.optionButton}>
           <TouchableOpacity
-            style={styles.verMasButton}
-            onPress={() => setShowDetails(true)}
+            style={styles.optionButton}
+            onPress={() => setIsModalVisible(true)}
           >
             <Ionicons name="open-outline" size={22} color="#145498" />
           </TouchableOpacity>
-          <Modal
-            visible={showDetails}
-            animationType="slide"
-            onRequestClose={() => setShowDetails(false)}
-          >
-            <View style={styles.modalContainer}>
-              <ScrollView contentContainerStyle={styles.scrollContent}>
-                <Text style={styles.fieldPrimary}>
-                  ID Expediente: {id_expediente}
-                </Text>
-                <Text style={styles.fieldTerciaryAlt}>
-                  Descripción del equipo: {descripcion_equipo}
-                </Text>
-                <View style={styles.fieldContainer}>
-                  <MaterialCommunityIcons
-                    name="account-circle"
-                    size={20}
-                    color="#145498"
-                  />
-                   <Text style={styles.fieldTerciaryAlt}>Nombre usuario{nombre_usuario}</Text>
-                  <Text style={styles.fieldTerciaryAlt}>{nombre_cliente}</Text>
-                  <Text style={styles.fieldSecondary}>{telefono_cliente}</Text>
-                </View>
-                <View style={styles.fieldContainer}>
-                  <MaterialCommunityIcons
-                    name="whatsapp"
-                    size={20}
-                    color="#145498"
-                  />
-                  <Text style={styles.fieldTerciaryAlt}>
-                    {whatsapp_cliente}
-                  </Text>
-                </View>
-                <View style={styles.fieldContainer}>
-                  <MaterialCommunityIcons
-                    name="map-marker"
-                    size={20}
-                    color="#145498"
-                  />
-                  <Text style={styles.fieldTerciaryAlt}>
-                    {direccion_cliente}
-                  </Text>
-                </View>
-                <View style={styles.fieldContainer}>
-                  <MaterialCommunityIcons
-                    name="map-marker"
-                    size={20}
-                    color="#145498"
-                  />
-                  <Text style={styles.fieldTerciaryAlt}>
-                    {estado_equipo}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => setShowDetails(false)}
-                >
-                  <Text style={styles.closeButtonText}>Cerrar</Text>
-                </TouchableOpacity>
-              </ScrollView>
-            </View>
-          </Modal>
         </View>
-
-        {/* Modal */}
       </Card>
+      <ExpedienteModal
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        expedienteData={{
+          id_expediente,
+          folio,
+          fecha_entrada,
+          fecha_entrega,
+          tiempo_taller,
+          costo_reparacion,
+          tiempo_proximo_servicio,
+          notas_cliente,
+          comentarios_internos,
+          razon_reparacion,
+          observaciones,
+          sugerencias,
+        }}
+      />
     </View>
   );
 };
