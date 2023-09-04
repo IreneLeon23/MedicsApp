@@ -1,23 +1,19 @@
-
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection"); 
+const pool = require("../connection");
 
-// Ruta para obtener el último ID Cliente de la tabla clientes
-router.get("/ultimoIdCliente", (req, res) => {
+router.get("/ultimoIdCliente", async (req, res) => {
+  try {
     const sql = `SELECT MAX(clave_cliente) AS ultimoIdCliente FROM clientes`;
-  
-    connection.query(sql, (err, results) => {
-      if (err) {
-        console.error("Error al obtener el último ID Cliente:", err);
-        res.status(500).json({ error: "Error al obtener el último ID Cliente" });
-        return;
-      }
-  
-      // Si no hay registros en la tabla, retornar el ID Cliente inicial como 1
-      const ultimoIdCliente = results.length > 0 ? results[0].ultimoIdCliente : 0;
-      res.json(ultimoIdCliente);
-    });
-  });
-  
+    const [results] = await pool.execute(sql);
+
+    // Si no hay registros en la tabla, retornar el ID Cliente inicial como 1
+    const ultimoIdCliente = results.length > 0 ? results[0].ultimoIdCliente : 0;
+    res.json(ultimoIdCliente);
+  } catch (error) {
+    console.error("Error al obtener el último ID Cliente:", error);
+    res.status(500).json({ error: "Error al obtener el último ID Cliente" });
+  }
+});
+
 module.exports = router;

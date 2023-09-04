@@ -52,7 +52,7 @@ const CotizacionItem = ({
       comentario_cotizacion: updatedComentarioCotizacion,
     };
 
-    fetch(`http://192.168.1.10:8080/workshop/EditCotizacion/${folio}`, {
+    fetch(`http://192.168.1.21:8080/taller/cotizaciones/editCotizacion/${folio}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -28,7 +28,7 @@ const ExpedienteModal = ({ visible, onClose, expedienteData }) => {
     );
     axios
       .put(
-        `http://192.168.1.10:8080/expedientes/editExpediente/${updatedExpedienteData.id_expediente}`,
+        `http://192.168.1.21:8080/taller/expedientes/editExpediente/${updatedExpedienteData.id_expediente}`,
         updatedExpedienteData
       )
       .then((response) => {

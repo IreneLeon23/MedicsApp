@@ -46,7 +46,7 @@ const OrdenItem = ({
   dificultad,
   comentario_cotizacion,
 }) => {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [trabajoInfo, setTrabajoInfo] = useState([]);
   const [iconName, setIconName] = useState("");
@@ -201,6 +201,10 @@ const OrdenItem = ({
           </View>
           {/* Telefono */}
           <View style={styles.fieldContainer}>
+            <Text style={styles.fieldTerciaryAlt}>
+              <Ionicons name="person" size={16} color="#145498" />
+              {nombre_cliente}
+            </Text>
             <TouchableOpacity
               style={styles.fieldContainer}
               onPress={handlePhoneCall}
@@ -211,7 +215,7 @@ const OrdenItem = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                Llamar
+                {/* Llamar */}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -224,28 +228,38 @@ const OrdenItem = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                Mensaje
+                {/* Mensaje */}
               </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.fieldContainer}>
-            {/* Nuevo botón para abrir AltaExpedienteScreen */}
+            {/* Botón para agregar trabajo */}
             <TouchableOpacity
-              style={styles.fieldContainer}
+              style={[styles.addButton, styles.fieldContainer]}
               onPress={() => {
-                navigation.navigate("Alta Expediente", { folio }); // Pasa el fk_servicio como parámetro
+                navigation.navigate("Alta Trabajos", { folio });
               }}
             >
-              <Ionicons name="briefcase" size={16} color="#145498" />
-              <Text style={styles.fieldTerciary}>Añadir expediente</Text>
+              <Ionicons name="hammer" size={16} color="#fff" />
+              <Text style={styles.addButtonText}>Añadir trabajos</Text>
+            </TouchableOpacity>
+            {/* Nuevo botón para abrir AltaExpedienteScreen */}
+            <TouchableOpacity
+              style={[styles.addButton, styles.fieldContainer]}
+              onPress={() => {
+                navigation.navigate("Alta Expediente", { folio });
+              }}
+            >
+              <Ionicons name="briefcase" size={16} color="#fff" />
+              <Text style={styles.addButtonText}>Añadir expediente</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.fieldContainerAlt}>
+          {/* <View style={styles.fieldContainerAlt}>
             <Text style={[styles.fieldTerciaryAlt, styles.opaqueText]}>
               {nombre_cliente}
             </Text>
-          </View>
+          </View> */}
         </Card.Content>
         <TouchableOpacity
           style={styles.optionButton}
@@ -309,6 +323,7 @@ const styles = StyleSheet.create({
   fieldContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 5,
   },
   fieldContainerAlt: {
     alignItems: "flex-end",
@@ -331,7 +346,7 @@ const styles = StyleSheet.create({
   fieldTel: {
     fontFamily: "jakarta-semi-bold",
     fontSize: 16,
-    marginLeft: 1,
+    marginLeft: 5,
     marginEnd: 5,
     color: "#145498",
   },
@@ -346,15 +361,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
     color: "#777",
-  },
-  fieldTerciaryAlt: {
-    fontFamily: "jakarta-light",
-    fontSize: 16,
-    color: "#777",
-    textAlign: "right",
-  },
-  opaqueText: {
-    opacity: 0.7,
   },
   optionButton: {
     position: "absolute",
@@ -409,10 +415,11 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   fieldTerciaryAlt: {
-    fontFamily: "jakarta-light",
+    fontFamily: "jakarta-regular",
     fontSize: 16,
     marginBottom: 10,
-    color: "#777",
+    color: "#145498",
+    marginEnd: 4,
   },
   editButton: {
     marginTop: 20,
@@ -443,8 +450,23 @@ const styles = StyleSheet.create({
   },
   ButtonText: {
     fontFamily: "jakarta-semi-bold",
-    fontSize: 16,
+    fontSize: 12,
     color: "#fff",
+  },
+  addButton: {
+    backgroundColor: "#145498", // Color de fondo azul
+    borderRadius: 10, // Borde redondeado
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 4,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  addButtonText: {
+    fontFamily: "jakarta-semi-bold",
+    fontSize: 12,
+    marginLeft: 5,
+    color: "#fff", // Texto blanco
   },
 });
 

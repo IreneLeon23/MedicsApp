@@ -27,7 +27,7 @@ const AltaTrabajoScreen = () => {
       };
   
       try {
-        const response = await axios.post('http://192.168.1.10:8080/trabajos', nuevoTrabajo, {
+        const response = await axios.post('http://192.168.1.21:8080/taller/trabajos/newTrabajo', nuevoTrabajo, {
           headers: {
             'Content-Type': 'application/json',
           },

@@ -21,7 +21,7 @@ class TrabajosGenScreen extends Component {
 
   fetchData = () => {
     axios
-      .get(`http://192.168.1.10:8080/workshop/trabajos`)
+      .get(`http://192.168.1.21:8080/taller/trabajos/getTrabajo`)
       .then((response) => {
         const trabajos = response.data;
         if (trabajos.length > 0) {
@@ -92,7 +92,7 @@ class TrabajosGenScreen extends Component {
           renderItem={this.renderTrabajoItem}
           style={styles.flatList}
         />
-        {/* Modal */}
+
        {/* Modal */}
        <Modal
           visible={this.state.isModalVisible}

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection");
+const pool = require("../connection");
 
+// Ruta para crear un nuevo usuario
 router.post("/newUser", (req, res) => {
   const formData = req.body;
 
@@ -20,7 +21,7 @@ router.post("/newUser", (req, res) => {
   };
 
   const insertUsuariosQuery = "INSERT INTO usuarios SET ?";
-  connection.query(insertUsuariosQuery, usuariosData, (error, result) => {
+  pool.query(insertUsuariosQuery, usuariosData, (error, result) => {
     if (error) {
       console.error("Error al guardar el usuario:", error);
       res.status(500).json({ error: "Error al guardar el usuario" });
@@ -30,10 +31,11 @@ router.post("/newUser", (req, res) => {
     }
   });
 });
-//obtener el ultimo clave_usuario
+
+// Ruta para obtener el último valor de clave_usuario
 router.get("/ultimoClaveUsuario", (req, res) => {
   const query = "SELECT MAX(clave_usuario) AS ultimoClaveUsuario FROM usuarios";
-  connection.query(query, (error, result) => {
+  pool.query(query, (error, result) => {
     if (error) {
       console.error("Error al obtener el último valor de clave_usuario:", error);
       res.status(500).json({ error: "Error al obtener el último valor de clave_usuario" });
@@ -42,7 +44,8 @@ router.get("/ultimoClaveUsuario", (req, res) => {
     }
   });
 });
-//Eliminar usuario
+
+// Ruta para eliminar un usuario
 router.delete("/deleteUser/:clave_usuario", (req, res) => {
   const claveUsuario = req.params.clave_usuario;
 
@@ -51,7 +54,7 @@ router.delete("/deleteUser/:clave_usuario", (req, res) => {
   }
 
   const deleteUsuarioQuery = "DELETE FROM usuarios WHERE clave_usuario = ?";
-  connection.query(deleteUsuarioQuery, [claveUsuario], (error, result) => {
+  pool.query(deleteUsuarioQuery, [claveUsuario], (error, result) => {
     if (error) {
       console.error("Error al eliminar el usuario:", error);
       res.status(500).json({ error: "Error al eliminar el usuario" });
@@ -61,4 +64,5 @@ router.delete("/deleteUser/:clave_usuario", (req, res) => {
     }
   });
 });
+
 module.exports = router;

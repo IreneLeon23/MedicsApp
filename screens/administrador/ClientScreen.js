@@ -19,7 +19,7 @@ const ClientScreen = () => {
 
   const fetchData = (reload = false) => {
     axios
-      .get(`http://192.168.1.10:8080/admin/clients`)
+      .get(`http://192.168.1.21:8080/admin/clients`)
       .then((response) => {
         setClientes(response.data);
       })

@@ -34,7 +34,7 @@ export const handleWhatsAppMessage = (whatsapp) => {
 export const loadTrabajoInfo = (clave_cliente, setTrabajoInfo) => {
   // Cargar información de trabajos al montar el componente
   axios
-    .get(`http://192.168.1.10:8080/admin/adminclien`)
+    .get(`http://192.168.1.21:8080/admin/adminclien`)
     .then((response) => {
       setTrabajoInfo(response.data);
     })

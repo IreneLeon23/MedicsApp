@@ -39,7 +39,7 @@ const LoginScreen = ({ onLogin }) => {
     loadFonts();
   }, []);const handleLogin = () => {
     axios
-      .post(`http://192.168.1.10:8080/auth/login`, { email, password })
+      .post(`http://192.168.1.21:8080/auth/login`, { email, password })
       .then((response) => {
         const { privilege, idUsuario } = response.data;
         if (privilege && idUsuario) {

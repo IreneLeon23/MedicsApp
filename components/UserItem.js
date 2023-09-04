@@ -58,7 +58,7 @@ const UserItem = ({
       };
 
       const response = await axios.put(
-        `http://192.168.1.10:8080/admin/updateUser/${clave_usuario}`,
+        `http://192.168.1.21:8080/admin/updateUser/${clave_usuario}`,
         updatedUserData
       );
 
@@ -83,7 +83,7 @@ const UserItem = ({
   const handleDeleteUser = async () => {
     try {
       const response = await axios.delete(
-        `http://192.168.1.10:8080/admin/deleteUser/${clave_usuario}`
+        `http://192.168.1.21:8080/admin/deleteUser/${clave_usuario}`
       );
 
       if (response.status === 200) {

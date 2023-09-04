@@ -16,7 +16,7 @@ const ReportesScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.10:8080/workshop/cliente`)
+      .get(`http://192.168.1.21:8080/taller/reportes/getReporte`)
       .then((response) => {
         const { result1, result2, result3, result4 } = response.data;
         setArticuloMasReparado(result1 || []);

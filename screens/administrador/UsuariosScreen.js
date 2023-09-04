@@ -24,7 +24,7 @@ const UsuariosScreen = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.10:8080/admin/adminus`);
+      const response = await axios.get(`http://192.168.1.21:8080/admin/adminus`);
       setUsuarios(response.data);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);

@@ -26,7 +26,7 @@ const NuevoUsuario = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.1.10:8080/admin/ultimoClaveUsuario")
+      .get("http://192.168.1.21:8080/admin/ultimoClaveUsuario")
       .then((response) => {
         const ultimoClave = parseInt(response.data.ultimoClaveUsuario, 10);
         const newClaveUsuario = ultimoClave + 1;
@@ -54,7 +54,7 @@ const NuevoUsuario = () => {
 
     try {
       const response = await axios.post(
-        "http://192.168.1.10:8080/admin/newUser",
+        "http://192.168.1.21:8080/admin/newUser",
         nuevoUsuario,
         {
           headers: {

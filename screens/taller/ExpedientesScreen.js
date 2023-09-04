@@ -20,7 +20,7 @@ const ExpedientesScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`http://192.168.1.10:8080/expedientes/getExpedientes`)
+      .get(`http://192.168.1.21:8080/taller/expedientes/getExpedientes`)
       .then((response) => {
         setExpedientes(response.data);
       })

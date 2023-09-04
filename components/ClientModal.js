@@ -31,7 +31,7 @@ const ClientModal = ({
     );
     axios
       .put(
-        `http://192.168.1.10:8080/admin/update/${updatedClientData.clave_cliente}`,
+        `http://192.168.1.21:8080/admin/update/${updatedClientData.clave_cliente}`,
         updatedClientData
       )
       .then((response) => {

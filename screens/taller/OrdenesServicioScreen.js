@@ -13,7 +13,7 @@ const OrdenesServicioScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedField, setSelectedField] = useState("nombre_producto");
   const [selectedOrder, setSelectedOrder] = useState("asc");
-  const serverIP = "http://192.168.1.10:8080"; // Replace with your server IP
+  const serverIP = "http://192.168.1.21:8080"; // Replace with your server IP
 
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
@@ -49,7 +49,7 @@ const OrdenesServicioScreen = () => {
 
   const fetchData = () => {
     axios
-      .get(`${serverIP}/workshop/ordenes`)
+      .get(`${serverIP}/taller/ordenes/getOrden`)
       .then((response) => {
         setOrdenes(response.data);
       })

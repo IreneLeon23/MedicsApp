@@ -1,42 +1,37 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection");
+const pool = require("../connection");
 
+router.get("/getExpedientes", async (req, res) => {
+  try {
+    const sql = `
+      SELECT 
+        expedientes.*,
+        orden_cotizacion.folio,
+        orden_cotizacion.descripcion AS descripcion_equipo,
+        orden_cotizacion.estado_equipo,
+        usuarios.nombre AS nombre_usuario,
+        clientes.nombre AS nombre_cliente,
+        clientes.telefono AS telefono_cliente,
+        clientes.whatsapp AS whatsapp_cliente,
+        clientes.direccion AS direccion_cliente
+      FROM expedientes
+      INNER JOIN orden_cotizacion ON expedientes.fk_servicio = orden_cotizacion.folio
+      INNER JOIN usuarios ON expedientes.fk_usuario = usuarios.clave_usuario
+      INNER JOIN clientes ON orden_cotizacion.fk_cliente = clientes.clave_cliente;
+    `;
 
-// Ruta para obtener todos los campos de la tabla ordenes_servicio
-router.get("/getExpedientes", (req, res) => {
-  // Realizar la consulta SQL para obtener los campos de la tabla ordenes_servicio
-  const sql = `
-  SELECT 
-    expedientes.*,
-    orden_cotizacion.folio,
-    orden_cotizacion.descripcion AS descripcion_equipo,
-    orden_cotizacion.estado_equipo,
-    usuarios.nombre AS nombre_usuario,
-    clientes.nombre AS nombre_cliente,
-    clientes.telefono AS telefono_cliente,
-    clientes.whatsapp AS whatsapp_cliente,
-    clientes.direccion AS direccion_cliente
-  FROM expedientes
-  INNER JOIN orden_cotizacion ON expedientes.fk_servicio = orden_cotizacion.folio
-  INNER JOIN usuarios ON expedientes.fk_usuario = usuarios.clave_usuario
-  INNER JOIN clientes ON orden_cotizacion.fk_cliente = clientes.clave_cliente;
-`;
-
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error al obtener los expedientes:", err);
-      res.status(500).json({ error: "Error al obtener los expedientes" });
-      return;
-    }
+    const [results] = await pool.execute(sql);
 
     // Enviar los campos obtenidos como respuesta
     res.json(results);
-  });
+  } catch (error) {
+    console.error("Error al obtener los expedientes:", error);
+    res.status(500).json({ error: "Error al obtener los expedientes" });
+  }
 });
 
-// Ruta para postear nuevos expedientes
-router.post("/newExpediente", (req, res) => {
+router.post("/newExpediente", async (req, res) => {
   const formData = req.body;
 
   const expedienteData = {
@@ -54,20 +49,18 @@ router.post("/newExpediente", (req, res) => {
     sugerencias: formData.sugerencias,
   };
 
-  const insertExpedienteQuery = "INSERT INTO expedientes SET ?";
-  connection.query(insertExpedienteQuery, expedienteData, (error, result) => {
-    if (error) {
-      console.error("Error al crear el expediente:", error);
-      res.status(500).json({ error: "Error al crear el expediente" });
-    } else {
-      console.log("Expediente creado exitosamente.");
-      res.status(201).json({ message: "Expediente creado exitosamente" });
-    }
-  });
+  try {
+    const [result] = await pool.execute("INSERT INTO expedientes SET ?", [expedienteData]);
+
+    console.log("Expediente creado exitosamente.");
+    res.status(201).json({ message: "Expediente creado exitosamente" });
+  } catch (error) {
+    console.error("Error al crear el expediente:", error);
+    res.status(500).json({ error: "Error al crear el expediente" });
+  }
 });
 
-// Ruta para editar campos de Expediente
-router.put("/editExpediente/:id", (req, res) => {
+router.put("/editExpediente/:id", async (req, res) => {
   const expedienteId = req.params.id;
   const formData = req.body;
 
@@ -76,7 +69,6 @@ router.put("/editExpediente/:id", (req, res) => {
     fecha_entrada: formData.fecha_entrada,
     fecha_entrega: formData.fecha_entrega,
     fk_servicio: formData.fk_servicio,
-    // fk_usuario: formData.fk_usuario,
     direccion: formData.direccion,
     tiempo_taller: formData.tiempo_taller,
     costo_reparacion: formData.costo_reparacion,
@@ -88,16 +80,15 @@ router.put("/editExpediente/:id", (req, res) => {
     sugerencias: formData.sugerencias,
   };
 
-  const updateExpedienteQuery = "UPDATE expedientes SET ? WHERE id_expediente = ?";
-const updateValues = [expedienteData, expedienteId];
-connection.query(updateExpedienteQuery, updateValues, (error, result) => {
-    if (error) {
-      console.error("Error al editar el expediente:", error);
-      res.status(500).json({ error: "Error al editar el expediente" });
-    } else {
-      console.log("Expediente editado exitosamente.");
-      res.status(200).json({ message: "Expediente editado exitosamente" });
-    }
-  });
+  try {
+    const [result] = await pool.execute("UPDATE expedientes SET ? WHERE id_expediente = ?", [expedienteData, expedienteId]);
+
+    console.log("Expediente editado exitosamente.");
+    res.status(200).json({ message: "Expediente editado exitosamente" });
+  } catch (error) {
+    console.error("Error al editar el expediente:", error);
+    res.status(500).json({ error: "Error al editar el expediente" });
+  }
 });
+
 module.exports = router;

@@ -76,7 +76,7 @@ const TrabajosGenItem = ({
     };
 
 
-    fetch(`http://192.168.1.10:8080/workshop/trabajoss/${id_trabajo}`, {
+    fetch(`http://192.168.1.21:8080/workshop/trabajos/editTrabajo/${id_trabajo}`, {
       method: 'PUT',
       body: JSON.stringify(updatedData),
       headers: {

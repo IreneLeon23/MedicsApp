@@ -20,7 +20,7 @@ const OrdenModal = ({ visible, onClose, ordenData }) => {
     // Realizar una petición PUT para actualizar la orden
     axios
       .put(
-        `http://192.168.1.10:8080/orders/update/${updatedOrdenData.folio}`,
+        `http://192.168.1.21:8080/taller/orders/editOrden/${updatedOrdenData.folio}`,
         updatedOrdenData
       )
       .then((response) => {
@@ -40,13 +40,13 @@ const OrdenModal = ({ visible, onClose, ordenData }) => {
     // Cargar información de trabajos al montar el componente
     axios
       .get(
-        `http://192.168.1.10:8080/workshop/trabajos?fk_orden_cotizacion=${ordenData.folio}`
+        `http://192.168.1.21:8080/taller/trabajos/getTrabajo?fk_orden_cotizacion=${ordenData.folio}`
       )
       .then((response) => {
         setTrabajoInfo(response.data);
       })
       .catch((error) => {
-        console.error("Error al obtener la información del trabajo:", error);
+        console.error("Error al obtener la información del trabajo en relación a la orden:", error);
       });
   }, [ordenData.folio]);
 

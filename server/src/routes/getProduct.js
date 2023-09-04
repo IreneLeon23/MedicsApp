@@ -1,33 +1,25 @@
-// productsRoutes.js
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection");
+const pool = require("../connection");
 
 // Ruta para obtener todos los productos
-router.get("/", (req, res) => {
-  const sql = "SELECT * FROM productos";
-
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.error("Error al obtener los productos:", err);
-      res.status(500).json({ error: "Error al obtener los productos" });
-      return;
-    }
-
+router.get("/", async (req, res) => {
+  try {
+    const sql = "SELECT * FROM productos";
+    const [results] = await pool.execute(sql);
     res.json(results);
-  });
+  } catch (error) {
+    console.error("Error al obtener los productos:", error);
+    res.status(500).json({ error: "Error al obtener los productos" });
+  }
 });
-// Ruta para obtener un producto por su id
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-  const sql = "SELECT * FROM productos WHERE id_producto = ?";
 
-  connection.query(sql, [id], (err, results) => {
-    if (err) {
-      console.error("Error al obtener el producto:", err);
-      res.status(500).json({ error: "Error al obtener el producto" });
-      return;
-    }
+// Ruta para obtener un producto por su id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const sql = "SELECT * FROM productos WHERE id_producto = ?";
+    const [results] = await pool.execute(sql, [id]);
 
     if (results.length === 0) {
       res.status(404).json({ error: "Producto no encontrado" });
@@ -35,7 +27,10 @@ router.get("/:id", (req, res) => {
     }
 
     res.json(results[0]);
-  });
+  } catch (error) {
+    console.error("Error al obtener el producto:", error);
+    res.status(500).json({ error: "Error al obtener el producto" });
+  }
 });
 
 module.exports = router;

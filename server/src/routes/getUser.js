@@ -1,42 +1,38 @@
-// usersRoutes.js
 const express = require('express');
 const router = express.Router();
-const connection = require('../connection');
+const pool = require('../connection');
 
 // Ruta para obtener todos los usuarios
-router.get('/', (req, res) => {
-  const sql = 'SELECT * FROM usuarios';
+router.get('/', async (req, res) => {
+  try {
+    const sql = 'SELECT * FROM usuarios';
 
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error al obtener los usuarios:', err);
-      res.status(500).json({ error: 'Error al obtener los usuarios' });
-      return;
-    }
+    const [results] = await pool.execute(sql);
 
     res.json(results);
-  });
+  } catch (error) {
+    console.error('Error al obtener los usuarios:', error);
+    res.status(500).json({ error: 'Error al obtener los usuarios' });
+  }
 });
 
 // Ruta para obtener un usuario por su id
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
 
-  connection.query(sql, [id], (err, results) => {
-    if (err) {
-      console.error('Error al obtener el usuario:', err);
-      res.status(500).json({ error: 'Error al obtener el usuario' });
-      return;
-    }
+  try {
+    const [results] = await pool.execute(sql, [id]);
 
     if (results.length === 0) {
       res.status(404).json({ error: 'Usuario no encontrado' });
-      return;
+    } else {
+      res.json(results[0]);
     }
-
-    res.json(results[0]);
-  });
+  } catch (error) {
+    console.error('Error al obtener el usuario:', error);
+    res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
 });
 
 module.exports = router;
